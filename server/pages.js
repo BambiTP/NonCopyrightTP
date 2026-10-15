@@ -22,7 +22,7 @@ function setStatsProvider(fn) { statsProvider = fn; }
 
 // site styles (public/css/site.css), picked on the settings page
 const THEMES = ['slate', 'light', 'midnight', 'black', 'forest', 'sand', 'grape', 'teams', 'steel'];
-const NAV = [['/', 'Play'], ['/groups', 'Groups'], ['/replays', 'Replays'], ['/maps', 'Maps'], ['/leaders', 'Leaders']];
+const NAV = [['/', 'Play'], ['/groups', 'Groups'], ['/replays', 'Replays'], ['/maps', 'Maps'], ['/textures', 'Textures'], ['/leaders', 'Leaders']];
 
 // "<!--\ntitle: X\nscript: /js/a.js /js/b.js\nclass: card-page\n-->" at the top of a template
 function splitHeader(text) {

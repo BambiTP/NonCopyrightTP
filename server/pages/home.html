@@ -1,29 +1,30 @@
 <!--
 title: BambiPro
 nav: /
-script: /js/game/walls.js /js/home.js
+script: /js/game/walls.js /js/scene.js /js/home.js
 -->
 <div id="back-to-group" class="game-banner" style="display:none" data-group="{{GROUP_ID}}">
     You're still in a group. <a class="btn btn-primary" id="back-to-group-link" href="/groups">Back to it</a>
 </div>
-<div class="arena">
-    <canvas id="arena" width="1120" height="280" data-tiles="{{TILES}}"></canvas>
-    <div class="over">
+<div class="arena"><canvas id="arena" width="1200" height="360" data-pack="{{PACK}}"></canvas></div>
+<div class="play-bar">
+    <div class="play-main">
         <a class="btn btn-primary btn-big" href="/games/find">Play</a>
-        <div class="q" id="queue-casual">&nbsp;</div>
-        <div class="side">
-            <a class="btn" href="/groups/create">New group</a>
-            <a class="btn" href="/games/find?type=ranked">Ranked eggball <span id="queue-ranked"></span></a>
-        </div>
+        <span class="muted" id="queue-casual"></span>
+    </div>
+    <div class="play-more">
+        <a class="btn" href="/groups/create">New group</a>
+        <a class="btn" href="/games/find?type=ranked">Ranked eggball</a>
+        <span class="muted" id="queue-ranked"></span>
     </div>
 </div>
 <div class="home-cols">
-    <div>
-        <h2>Live</h2>
+    <section>
+        <h2>Live games</h2>
         <div class="list" id="live-games"><p class="muted">Nothing running.</p></div>
-    </div>
-    <div>
-        <h2>Groups</h2>
+    </section>
+    <section>
+        <h2>Open groups</h2>
         <div class="list" id="live-groups"><p class="muted">No open groups.</p></div>
-    </div>
+    </section>
 </div>

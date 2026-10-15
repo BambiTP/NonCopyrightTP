@@ -193,17 +193,17 @@ app.get('/maps/png/:key', (req, res) => {
   res.set('Cache-Control', 'public, max-age=3600').sendFile(path.join(__dirname, '..', 'maps', key + '.png'));
 });
 
-// settings: preferences live in the browser; the texture pack also goes on the account
-app.get('/settings', (req, res) => html(res, pages.render('settings.html', {
+// texture packs (the choice also goes on the account) and settings (kept in the browser)
+app.get('/textures', (req, res) => html(res, pages.render('textures.html', {
   PACKS_JSON: pages.esc(JSON.stringify({ packs: PACKS.map((p) => ({ name: p.name, author: p.author, ...Object.fromEntries(ASSET_KEYS.map((k) => [k, p[k]])) })), chosen: textureUrls(req) })),
 })));
-app.get('/textures', (req, res) => res.redirect('/settings#textures'));
+app.get('/settings', (req, res) => html(res, pages.render('settings.html')));
 app.post('/textures', (req, res) => {
   if (req.session.account) { require('./accounts').setTextures(req.session, req.body); }
   res.json({ success: true });
 });
 
-app.get('/', (req, res) => html(res, pages.render('home.html', { GROUP_ID: req.session.groupId || 'null', TILES: pages.esc(textureUrls(req).tiles) })));
+app.get('/', (req, res) => html(res, pages.render('home.html', { GROUP_ID: req.session.groupId || 'null', PACK: pages.esc(JSON.stringify(textureUrls(req))) })));
 
 // what's on right now, for the home page: listed groups and running games anyone can watch
 app.get('/live.json', (req, res) => {

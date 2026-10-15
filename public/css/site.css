@@ -151,13 +151,12 @@ textarea.form-control { min-height: 80px; }
 .score-red, .score-blue { font-weight: 700; }
 
 /* home */
-.arena { position: relative; border-radius: var(--radius); overflow: hidden; margin-bottom: 26px; background: #000; box-shadow: var(--shadow); }
-.arena canvas { display: block; width: 100%; height: 260px; object-fit: cover; }
-.arena .over { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: rgba(0,0,0,.35); }
-.arena .over .q { color: #fff; font-size: 14px; text-shadow: 0 1px 3px #000; }
-.arena .side { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-.arena .side .btn { background: rgba(20,20,24,.85); border-color: rgba(255,255,255,.15); color: #fff; }
-.home-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.arena { border-radius: var(--radius); overflow: hidden; background: #000; box-shadow: var(--shadow); }
+.arena canvas { display: block; width: 100%; height: auto; }
+.play-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 20px 0 40px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.play-main, .play-more { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.home-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.home-cols h2 { margin-bottom: 12px; }
 @media (max-width: 800px) { .home-cols { grid-template-columns: 1fr; } }
 
 /* groups */
@@ -240,7 +239,7 @@ textarea.form-control { min-height: 80px; }
 .queue-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
 
 /* texture packs + styles */
-.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
 .pack { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 8px; cursor: pointer; }
 .pack:hover { border-color: var(--muted); }
 .pack.selected { border-color: var(--accent); }
