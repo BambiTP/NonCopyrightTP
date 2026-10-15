@@ -15,6 +15,24 @@ npm install
 npm start            # http://localhost:3000  (PORT and HOST env vars change it)
 ```
 
+### On the internet with Cloudflare Tunnel
+
+cloudflared connects out to Cloudflare, so no open ports, router setup or certificate are needed
+(it is used from your PATH, or downloaded into `bin/` the first time).
+
+```
+npm run tunnel                          # free quick tunnel: prints https://<words>.trycloudflare.com
+TUNNEL_TOKEN=<token> npm run tunnel     # your own domain, same address every time
+```
+
+For your own domain: Cloudflare dashboard → Zero Trust → Networks → Tunnels → create a tunnel, add a
+public hostname (e.g. `play.example.com`) pointing at `http://localhost:3000`, and copy the token.
+The quick tunnel's address changes every restart and has no uptime guarantee, so use it for testing.
+
+On an always-on Ubuntu server, `sudo TUNNEL_TOKEN=<token> bash deploy/setup.sh` installs the game and
+cloudflared as systemd services and closes the web ports (only SSH stays open). Without
+`TUNNEL_TOKEN` it uses Caddy on a public IP instead.
+
 `deploy/fetch-music.sh` downloads the community music tracks on a server (they aren't in the repo).
 
 ## What's where

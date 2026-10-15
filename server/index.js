@@ -49,7 +49,7 @@ function limited(key, max, ms) {
 }
 const note = (key) => attempts.set(key, (attempts.get(key) || []).concat(Date.now()));
 setInterval(() => { const now = Date.now(); for (const [k, l] of attempts) if (!l.some((t) => now - t < 3600000)) attempts.delete(k); }, 600000).unref();
-// the visitor's address: Caddy (on this machine) passes it in X-Forwarded-For
+// the visitor's address: Caddy or cloudflared (on this machine) passes it in X-Forwarded-For
 function clientIp(req) {
   const ip = req.socket.remoteAddress || '';
   if (!/^(::ffff:)?127\.|^::1$/.test(ip)) return ip;
@@ -382,5 +382,5 @@ games.attachGames(io);
 server.listen(PORT, HOST, () => {
   const ips = Object.values(os.networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address);
   console.log(`TagPro local server on http://localhost:${PORT}`);
-  for (const ip of ips) console.log(`  LAN: http://${ip}:${PORT}`);
+  if (HOST !== '127.0.0.1') for (const ip of ips) console.log(`  LAN: http://${ip}:${PORT}`);
 });
