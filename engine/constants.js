@@ -1,27 +1,25 @@
-// constants.js - shared values. MAP_OBJECT_BITS and the collision filters are copied from the
-// shared module bundled in the official client (global-game.js, "sharedConstants").
+// constants.js - values shared by the server engine and the browser client.
 (function () {
+// Box2D collision categories: walls collide with everything; each team's balls have their own bit
+// so ghost modes can switch collisions off per pair.
 const MAP_OBJECT_BITS = { STRUCTURE: -1, FLAG: 2, MARSBALL: 4, BUFF: 8, OTHER: 16, RED_PLAYER: 32, BLUE_PLAYER: 64, ALL_PLAYERS: 96, DEFAULT_OBJECTS: 126 };
 
+// what a ball collides with under a ghost mode: everything it normally would, minus the ignored groups
+const GHOST_IGNORES = {
+  noPlayerCollisions: () => MAP_OBJECT_BITS.ALL_PLAYERS,
+  noTeamCollisions: (own) => own,
+  noEnemyCollisions: (own) => MAP_OBJECT_BITS.ALL_PLAYERS & ~own,
+  noMarsBallCollisions: () => MAP_OBJECT_BITS.MARSBALL,
+  noPlayerOrMarsCollisions: () => MAP_OBJECT_BITS.MARSBALL | MAP_OBJECT_BITS.ALL_PLAYERS,
+};
 function getPlayerCollisions(ghostMode, isRed) {
-  const t = MAP_OBJECT_BITS;
-  const n = isRed ? t.RED_PLAYER : t.BLUE_PLAYER;
-  let r;
-  switch (ghostMode) {
-    case 'noPlayerCollisions': r = t.ALL_PLAYERS; break;
-    case 'noTeamCollisions': r = n; break;
-    case 'noEnemyCollisions': r = isRed ? t.BLUE_PLAYER : t.RED_PLAYER; break;
-    case 'noMarsBallCollisions': r = t.MARSBALL; break;
-    case 'noPlayerOrMarsCollisions': r = t.MARSBALL | t.ALL_PLAYERS; break;
-    default: r = 0;
-  }
-  return { categoryBits: n, maskBits: t.DEFAULT_OBJECTS & ~r };
+  const own = isRed ? MAP_OBJECT_BITS.RED_PLAYER : MAP_OBJECT_BITS.BLUE_PLAYER;
+  const ignore = GHOST_IGNORES[ghostMode] ? GHOST_IGNORES[ghostMode](own) : 0;
+  return { categoryBits: own, maskBits: MAP_OBJECT_BITS.DEFAULT_OBJECTS & ~ignore };
 }
-
 function getMarsballCollisions(ghostMode) {
-  const t = MAP_OBJECT_BITS;
-  const i = (ghostMode === 'noMarsBallCollisions' || ghostMode === 'noPlayerOrMarsCollisions') ? t.ALL_PLAYERS : 0;
-  return { categoryBits: t.MARSBALL, maskBits: t.DEFAULT_OBJECTS & ~i };
+  const ignoresBalls = ghostMode === 'noMarsBallCollisions' || ghostMode === 'noPlayerOrMarsCollisions';
+  return { categoryBits: MAP_OBJECT_BITS.MARSBALL, maskBits: MAP_OBJECT_BITS.DEFAULT_OBJECTS & ~(ignoresBalls ? MAP_OBJECT_BITS.ALL_PLAYERS : 0) };
 }
 
 const STATES = { ACTIVE: 1, ENDED: 2, COUNTDOWN: 3, INACTIVE: 4, OVERTIME: 5, EXITED: 6, CLUTCH: 7 };

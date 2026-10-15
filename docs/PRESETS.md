@@ -1,7 +1,7 @@
 # TagPro group presets
 
 How TagPro's group presets work: the code from the group page's **Generate Preset** button, and the
-`/groups/create?preset=<code>` link. tagpro-local copies this format exactly, including the real
+`/groups/create?preset=<code>` link. This server copies this format exactly, including the real
 server's bugs, in [`server/preset.js`](../server/preset.js).
 
 Everything here was worked out in October 2026 by changing settings in live groups on
@@ -189,7 +189,7 @@ The answer is `false` and nothing changes if any of these is true:
 
 ## TagPro quirks
 
-tagpro-local keeps all of these on purpose, so presets behave the same on both.
+This server keeps all of these on purpose, so presets behave the same on both.
 
 1. **Random CTF / Random NF can't be loaded.** Presets using them are generated, but loading one is
    always refused.
@@ -204,7 +204,7 @@ tagpro-local keeps all of these on purpose, so presets behave the same on both.
 4. **Loading accepts values the page never offers,** such as acceleration 0, caps 51, boost power 255,
    and a 180-second potato timer.
 
-## In tagpro-local
+## In this repo
 
 - [`server/preset.js`](../server/preset.js):
   - `encode(settings, modeMap)` makes a preset.
@@ -220,14 +220,14 @@ tagpro-local keeps all of these on purpose, so presets behave the same on both.
 ### Not covered
 
 - **Uploaded maps:** never tested, so they aren't written to presets.
-- **Eggball and ice hockey games in tagpro-local:** these still start on the selected map, not the mode's
+- **Eggball and ice hockey games here:** these still start on the selected map, not the mode's
   own map.
 - **The real server's `selectMaps` setting:** this hides the map dropdown in eggball and ice hockey.
-  tagpro-local doesn't have it.
+  This server doesn't have it.
 
 ### How it was checked
 
-Every result below was recorded from tagpro.koalabeast.com, and tagpro-local's code matches all of them:
+Every result below was recorded from tagpro.koalabeast.com, and this server's code matches all of them:
 
 - **Generating:** 153 fresh groups with random mixes of settings, maps, regions and servers, plus every
   value of every setting on its own.

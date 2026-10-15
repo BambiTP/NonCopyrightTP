@@ -26,6 +26,22 @@ function mapKeys() {
     .filter((k) => fs.existsSync(path.join(MAPS_DIR, k + '.json')));
 }
 
+// installed maps for the group page's map list: [{ key, name, author, rotation }]
+let mapListCache = null;
+function mapList() {
+  const keys = mapKeys().filter((k) => !k.startsWith('upload-'));
+  const stamp = keys.join(',');
+  if (mapListCache && mapListCache.stamp === stamp) return mapListCache.list;
+  const rot = new Set(rotationKeys());
+  const list = keys.map((k) => {
+    let info = {};
+    try { info = JSON.parse(fs.readFileSync(path.join(MAPS_DIR, k + '.json'), 'utf8')).info || {}; } catch (e) { /* unreadable */ }
+    return { key: k, name: String(info.name || k), author: String(info.author || 'Unknown'), rotation: rot.has(k) };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  mapListCache = { stamp, list };
+  return list;
+}
+
 // a map image's size from its PNG header, checked before decoding (a 2 MB file can decode to gigabytes)
 const MAX_MAP_TILES = 256; // real maps are well under 100 x 100
 function checkPngSize(buf) {
@@ -231,4 +247,4 @@ function attachGames(io) {
 queue.init({ createGame, resolveMap, games });
 ranked.init({ createGame, resolveMap, games });
 
-module.exports = { games, MapError, mapProblem, checkPngSize, createGame, launchGroupGame, endGame, attachJoiner, attachGames, resolveMap, fetchFortunateMap, mapKeys };
+module.exports = { games, MapError, mapProblem, checkPngSize, createGame, launchGroupGame, endGame, attachJoiner, attachGames, resolveMap, fetchFortunateMap, mapKeys, mapList };

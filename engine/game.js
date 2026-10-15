@@ -45,16 +45,11 @@ const TRUST_GHOST = new Set(['noPlayerCollisions', 'noPlayerOrMarsCollisions']);
 const TRUST_MAX_SPEED = 30;   // m/s; boost + bomb on top of each other stays under this
 const TRUST_SLACK = 0.6;      // m of extra movement allowed per report (jitter, late packets)
 
-// Eggball (the official easter-2017 event mode). Client files are the real ones, served from
-// /events; every number below was measured from 95 real eggball replays (Oct 2026).
+// Eggball (an event mode): the client draws the egg itself and uses this community tile sheet;
+// every number below was measured from 95 real eggball replays (Oct 2026).
 const EGG_CLIENT_INFO = {
-  eventTextures: { tiles: '/textures/musclescupog/tiles.png', splats: '/images/events/easter/splats.png' },
-  eventSounds: [{ id: 'throw', src: '/events/easter-2016/sounds/throw' }],
-  eventGraphics: [{ id: 'egg', src: '/events/easter-2016/images/egg.png' }]
-    .concat(Array.from({ length: 17 }, (_, i) => ({ id: 'raptor' + (i + 1), src: `/events/easter-2017/images/raptor${i + 1}.png` })))
-    .concat([{ id: 'field', src: '/events/easter-2017/images/field.png' }]),
-  eventScripts: ['/events/easter-2017/scripts/easter-2017.js'],
-  eventSplats: '/images/events/easter/splats.png',
+  eventTextures: { tiles: '/textures/musclescupog/tiles.png' },
+  eventSounds: [], eventGraphics: [], eventScripts: [], eventSplats: null,
 };
 const EGG = {
   RADIUS: 0.115, DENSITY: 2, FRICTION: 0.5, RESTITUTION: 0.6, LINEAR_DAMPING: 0.75, ANGULAR_DAMPING: 0.5, // the client's egg body
@@ -105,7 +100,7 @@ class GameRoom {
       : null;
     this.localTrust = !this.egg && !!this.settings.localTrust && TRUST_GHOST.has(this.settings.ghostMode);
     this.trust = new WeakMap(); // player -> last accepted report { x, y, at }
-    this.trusted = new WeakSet(); // players whose client runs /localtrust.js (they've sent a report)
+    this.trusted = new WeakSet(); // players whose client runs local trust (they've sent a report)
     this.W = this.map.tiles.length;
     this.H = this.map.tiles[0].length;
     this.tiles = this.map.tiles.map((col) => col.slice());
@@ -251,7 +246,7 @@ class GameRoom {
       eventTextures: {}, eventSounds: [], eventMusic: [], eventGraphics: [], eventScripts: [], eventSplats: null, eventFlairs: [],
       gameMode: 'classic', classicGameMode: 'ctf', scoreAlgorithm: 'IPMv1.1', worldStarted: true,
       ...(s.mapTestingMode ? { mapTestingMode: true } : {}),
-      ...(this.gravity ? { eventScripts: ['/scripts/gravity.js'] } : {}),
+      ...(this.gravity ? { gravity: true, eventScripts: ['/scripts/gravity.js'] } : {}), // the script name: what older replays carry
       ...(this.egg ? EGG_CLIENT_INFO : {}),
     });
     this.send(client, 'teamNames', { redTeamName: s.redTeamName, blueTeamName: s.blueTeamName });
@@ -541,7 +536,7 @@ class GameRoom {
     return null;
   }
 
-  // what /localtrust.js needs to predict its own ball exactly like this server does
+  // what the client's local trust (public/js/game/trust.js) needs to predict its own ball exactly like this server does
   trustConfig() {
     const s = this.settings, portals = {};
     for (const key in this.map.portals) { const d = this.map.portals[key].destination; if (d) portals[key] = [d.x, d.y]; }

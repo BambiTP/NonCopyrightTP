@@ -1,4 +1,4 @@
-// repro.js - checks how exactly tagpro-local's engine reproduces a real TagPro replay.
+// repro.js - checks how exactly this engine reproduces a real TagPro replay.
 //
 // The real server sends every player's position and velocity every 15 ticks (250 ms), rounded to
 // 0.01 m. For each pair of consecutive snapshots A -> B, every ball is put exactly where the replay

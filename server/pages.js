@@ -1,4 +1,6 @@
-// pages.js - renders the real TagPro page templates (built by tools/build-pages.py).
+// pages.js - renders the page templates in server/pages/. A template that isn't a full HTML
+// document starts with a header comment (title / script / class lines) and is wrapped in
+// layout.html (site header + nav).
 const fs = require('fs');
 const path = require('path');
 
@@ -53,26 +55,38 @@ function disableDeadLinks(html) {
     DEAD_LINKS.includes(href) ? `<a${pre}${post} aria-disabled="true" style="pointer-events:none;opacity:.4;cursor:default">` : m);
 }
 
-// the saved real pages report every visit to TagPro's own Reddit ad account: never sent from here
-const REDDIT_PIXEL = /<script>\s*!function \(w, d\) \{\s*if \(w\.rdt\) return;[\s\S]*?<\/script>/g;
+const NAV = [['/', 'Play'], ['/groups', 'Groups'], ['/maps', 'Maps'], ['/replays', 'Replays'], ['/leaders', 'Leaders'],
+  ['/textures', 'Textures'], ['/settings', 'Settings'], ['/playersearch', 'Players'], ['/feedback', 'Feedback']];
+
+// "<!--\ntitle: X\nscript: /js/a.js /js/b.js\nclass: card-page\n-->" at the top of a template
+function splitHeader(text) {
+  const m = text.match(/^<!--\n([\s\S]*?)\n-->\n?/);
+  if (!m) return { meta: {}, body: text };
+  const meta = {};
+  for (const line of m[1].split('\n')) { const i = line.indexOf(':'); if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim(); }
+  return { meta, body: text.slice(m[0].length) };
+}
+
+function layout(meta, body, vars) {
+  const path = meta.nav || '';
+  const nav = NAV.map(([href, label]) => `<a href="${href}"${href === path ? ' class="active"' : ''}>${label}</a>`).join('');
+  const who = vars.USER_NAME ? `<a id="login-btn" class="btn btn-secondary" href="/profile">${esc(vars.USER_NAME)}</a>`
+    : '<a id="login-btn" class="btn btn-secondary" href="/login">Log In / Sign Up</a>';
+  const scripts = (meta.script || '').split(/\s+/).filter(Boolean).map((s) => `<script src="${esc(s)}"></script>`).join('\n');
+  const parts = {
+    TITLE: meta.title || 'BambiPro', // already escaped where it came from a variable
+    NAV: nav, WHO: who, PAGE_CLASS: esc(meta.class || ''), SCRIPTS: scripts,
+    ORIGIN: vars.ORIGIN || '',
+  };
+  return tpl('layout.html').replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (k === 'BODY' ? m : Object.hasOwn(parts, k) ? parts[k] : m))
+    .replace('{{BODY}}', () => body);
+}
 
 function render(name, vars = {}) {
   vars = Object.assign({}, statsProvider(), vars);
-  let html = tpl(name).replace(REDDIT_PIXEL, '').replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (Object.hasOwn(vars, k) ? vars[k] : m));
-  html = disableDeadLinks(rebrand(html));
-  // redrawn images: version the URLs so cached copies of the old ones aren't shown
-  html = html.replace(/\/images\/(logo|KoalaBeast)\.png(?=")/g, '/images/$1.png?v=bambi1');
-  // link previews (Discord etc.) need absolute URLs pointing at this site
-  if (vars.ORIGIN) {
-    html = html.replace(/(<meta property="og:url" content=")[^"]*(")/i, `$1${vars.ORIGIN}/$2`)
-      .replace(/(<meta property="og:image" content=")\/(?!\/)([^"]*")/i, `$1${vars.ORIGIN}/$2`);
-  }
-  if (vars.USER_NAME) {
-    // logged in: the header's "Log In / Sign Up" becomes the player's name (links to the profile)
-    html = html.replace('<a id="login-btn" class="btn btn-secondary" href="/login">Log In / Sign Up</a>', `<a id="login-btn" class="btn btn-secondary" href="/profile">${esc(vars.USER_NAME)}</a>`)
-      .replace('<li class="nav-mobile"><a href="/login">Log In / Sign Up</a></li>', `<li class="nav-mobile"><a href="/profile">${esc(vars.USER_NAME)}</a></li>`);
-  }
-  return html;
+  let html = tpl(name).replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (Object.hasOwn(vars, k) ? vars[k] : m));
+  if (!/^\s*<!doctype/i.test(html)) { const { meta, body } = splitHeader(html); html = layout(meta, body, vars); }
+  return disableDeadLinks(rebrand(html));
 }
 
 // public-game stats (Play Now) + degree progress, shown on profiles
@@ -181,7 +195,6 @@ function groupItem(g) {
   const members = g.memberList();
   const leader = members.find((m) => m.leader);
   return `
-                        <div class="col-md-6">
                             <div class="group-item">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -214,8 +227,7 @@ ${members.map((m) => `                                            <div class="gr
                                         </a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>`;
+                            </div>`;
 }
 
 module.exports = { leadersCard, render, esc, groupItem, setStatsProvider, loginCard, profileCard, statsTable };

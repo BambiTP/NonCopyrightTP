@@ -1,4 +1,4 @@
-// hostlink.js - this copy of tagpro-local hosting a peer-to-peer group's games (started by
+// hostlink.js - this copy of the server hosting a peer-to-peer group's games (started by
 // server/host.js). It stays connected to the main site, creates the group's games here when the
 // leader launches, and turns each player's ticket into a local session. Group, home and account
 // pages belong to the main site, so requests for them are sent back there.

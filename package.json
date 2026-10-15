@@ -1,7 +1,7 @@
 {
-  "name": "tagpro-local",
+  "name": "noncopyrighttp",
   "version": "1.0.0",
-  "description": "Local TagPro: real client + recoded server",
+  "description": "BambiPro: a capture-the-flag ball game server and browser client",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",

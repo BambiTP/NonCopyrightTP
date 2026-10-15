@@ -11,7 +11,7 @@ const [base, key] = process.argv.slice(2);
   console.log('replay rows on page:', await page.locator('table tbody tr').count());
   await page.goto(base + '/game?replay=' + key, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(12000);
-  const st = await page.evaluate(() => ({ state: tagpro.state, players: Object.values(tagpro.players || {}).map((p) => p.name), map: !!tagpro.map }));
+  const st = await page.evaluate(() => ({ state: bp.game.state, players: Object.values(bp.game.players || {}).map((p) => p.name), map: !!bp.game.tiles }));
   console.log('viewer:', JSON.stringify(st));
   await page.screenshot({ path: __dirname + '/../ref/shots/replay-viewer.png' });
   await b.close();

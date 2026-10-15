@@ -79,11 +79,8 @@ function coerce(key, raw) {
 // map list entries are Fortunate Maps ids (numbers); a few rebuilt maps use their own keys
 const parseIds = (text) => String(text || '').split(/[\s,]+/).map((x) => x.trim()).filter((x) => /^(\d{1,7}|real-[a-z0-9-]+)$/.test(x));
 
-function preview(m) {
-  const real = path.join(__dirname, '..', 'public', 'images', 'maps', m.name + '-small.png');
-  if (fs.existsSync(real)) return '/images/maps/' + encodeURIComponent(m.name) + '-small.png';
-  return /^\d+$/.test(m.key) ? `https://fortunatemaps.herokuapp.com/preview/${m.key}.jpeg` : '';
-}
+// drawn in the page from the map's own layout image (/js/admin.js)
+const preview = (m) => '/maps/png/' + encodeURIComponent(m.key);
 
 // downloads any FM ids that aren't installed yet; returns ids that couldn't be fetched
 async function ensureMaps(ids, fetchFortunateMap) {
@@ -130,7 +127,7 @@ function panel(message, warn) {
   const pool = (rotationPool() || maps.filter((m) => m.inRotation).map((m) => m.key)).map((k) => byKey[k]).filter(Boolean);
   const single = mapChoice() !== 'random' ? byKey[mapChoice()] : null;
   const card = (m) => `<div style="width:120px;text-align:center;font-size:12px">
-      ${preview(m) ? `<img src="${esc(preview(m))}" alt="" style="width:120px;height:80px;object-fit:contain;background:#111;border-radius:4px">` : '<div style="width:120px;height:80px;background:#111;border-radius:4px"></div>'}
+      <canvas class="map-thumb" data-src="${esc(preview(m))}" width="120" height="80" style="background:#111;border-radius:4px"></canvas>
       <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(m.name)}">${esc(m.name)}</div>
       <div style="opacity:.6">${esc(m.key)}</div></div>`;
   const input = (key) => {

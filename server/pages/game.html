@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BambiPro</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/game.css?v={{V}}">
+</head>
+<body>
+    <canvas id="game"></canvas>
+    <div id="hud-tl" class="hud"><a href="/" id="exit">&larr; Exit</a><div id="netstats"></div><div id="specs"></div><div id="mapinfo"></div></div>
+    <div id="hud-tr" class="hud"><button id="mute" type="button" title="Sound on/off (M)">Sound</button></div>
+    <div id="banner" class="hud"></div>
+    <div id="respawn" class="hud"></div>
+    <div id="teamnames" class="hud"><span class="red" id="name-red" style="color:#ff8b84"></span><span id="name-blue" style="color:#8db8ff"></span></div>
+    <div id="scorebar" class="hud"><div class="s red" id="score-red">0</div><div class="mid"><div id="clock">0:00</div><div id="mapname"></div></div><div class="s blue" id="score-blue">0</div></div>
+    <div id="chat" class="hud"><div id="chat-lines"></div><form id="chat-input-wrap" autocomplete="off"><span id="chat-to">ALL</span><input id="chat-input" maxlength="120"></form></div>
+    <div id="board" class="hud"></div>
+    <div id="help" class="hud"></div>
+    <div id="loading" class="hud">Loading...</div>
+    <script>window.GAME_CONFIG = {{GAME_CONFIG}};</script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/site.js"></script>
+    <script src="/engine/box2d.js"></script>
+    <script src="/engine/constants.js"></script>
+    <script src="/js/game/walls.js?v={{V}}"></script>
+    <script src="/js/game/assets.js?v={{V}}"></script>
+    <script src="/js/game/physics.js?v={{V}}"></script>
+    <script src="/js/game/core.js?v={{V}}"></script>
+    <script src="/js/game/render.js?v={{V}}"></script>
+    <script src="/js/game/ui.js?v={{V}}"></script>
+    <script src="/js/game/trust.js?v={{V}}"></script>
+    <script src="/js/game/replay.js?v={{V}}"></script>
+    <script src="/js/game/main.js?v={{V}}"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!--
+title: Maps - BambiPro
+nav: /maps
+script: /socket.io/socket.io.js /js/mappreview.js /js/maps.js
+-->
+<h1>Maps</h1>
+<p class="muted">The maps in the Play Now rotation, made by the community on Fortunate Maps. Rate them after a game, or here when you're logged in.</p>
+<div class="filters">
+    <input id="map-search" class="form-control" style="max-width:260px" placeholder="Search maps">
+    <select id="map-sort"><option value="score">Best rated</option><option value="plays">Most played</option><option value="name">Name</option></select>
+    <select id="map-type"><option value="">All types</option><option value="ctf">Capture the flag</option><option value="nf">Neutral flag</option></select>
+</div>
+<p id="map-login" class="muted" style="display:none"><a href="/login">Log in</a> to rate maps.</p>
+<div id="maps" class="map-grid"></div>

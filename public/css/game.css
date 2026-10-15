@@ -1,0 +1,51 @@
+/* game.css - the game page: a full-window canvas with an HTML overlay */
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: #fff; font: 14px "Segoe UI", Roboto, Arial, sans-serif; }
+canvas#game { position: fixed; inset: 0; display: block; }
+.hud { position: fixed; pointer-events: none; text-shadow: 0 1px 2px #000, 0 0 3px #000; }
+.hud a, .hud button, .hud input, .hud select { pointer-events: auto; }
+#hud-tl { top: 8px; left: 10px; font-size: 12px; color: #cfd6e0; line-height: 1.5; }
+#hud-tl a { color: #8bc34a; text-decoration: none; font-weight: 600; }
+#hud-tr { top: 8px; right: 10px; text-align: right; font-size: 12px; color: #cfd6e0; }
+#hud-tr button { background: rgba(0,0,0,.4); border: 1px solid #444; color: #ddd; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px; }
+#scorebar { bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; }
+#scorebar .s { font-size: 46px; font-weight: 800; min-width: 50px; text-align: center; }
+#scorebar .red { color: #ff5b52; } #scorebar .blue { color: #4f8fff; }
+#scorebar .mid { text-align: center; }
+#clock { font-size: 34px; font-weight: 700; color: #eee; min-width: 110px; }
+#clock.ot { color: #ffd34d; }
+#mapname { font-size: 12px; color: #aaa; }
+#teamnames { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); display: flex; gap: 120px; font-size: 13px; font-weight: 700; }
+#banner { top: 18%; left: 50%; transform: translateX(-50%); font-size: 54px; font-weight: 800; text-align: center; white-space: nowrap; }
+#banner small { display: block; font-size: 20px; font-weight: 600; color: #ddd; }
+#respawn { top: 58%; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: 700; color: #ddd; }
+#chat { left: 12px; bottom: 12px; width: min(520px, 45vw); font-size: 13px; line-height: 1.35; }
+#chat .line { margin-top: 2px; word-wrap: break-word; }
+#chat .line.old { opacity: 0; transition: opacity 1s; }
+#chat .who { font-weight: 700; }
+#chat .team-r { color: #ff8b84; } #chat .team-b { color: #8db8ff; } #chat .grp { color: #e3a3ff; } #chat .sys { color: #cfcfcf; }
+#chat-input-wrap { display: none; margin-top: 6px; pointer-events: auto; }
+#chat-input-wrap.open { display: flex; align-items: center; gap: 6px; }
+#chat-input-wrap span { font-weight: 700; font-size: 12px; padding: 3px 6px; border-radius: 4px; background: rgba(0,0,0,.6); }
+#chat-input { flex: 1; background: rgba(0,0,0,.65); border: 1px solid #666; color: #fff; padding: 6px 8px; border-radius: 4px; font: inherit; outline: none; }
+#board { top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10,12,16,.92); border: 1px solid #333; border-radius: 10px; padding: 16px 18px; display: none; max-height: 86vh; overflow: auto; text-shadow: none; pointer-events: auto; min-width: min(760px, 94vw); }
+#board.show { display: block; }
+#board h2 { margin: 0 0 10px; text-align: center; font-size: 26px; }
+#board table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+#board th { color: #9aa3b2; font-weight: 600; text-align: right; padding: 3px 6px; font-size: 11px; text-transform: uppercase; }
+#board th:first-child, #board td:first-child { text-align: left; }
+#board td { text-align: right; padding: 4px 6px; border-top: 1px solid #262b34; }
+#board tr.r td:first-child { color: #ff8b84; font-weight: 700; } #board tr.b td:first-child { color: #8db8ff; font-weight: 700; }
+#board tr.me td { background: rgba(255,255,255,.06); }
+#board .actions { text-align: center; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+#board .actions .rate button.on { outline: 2px solid #8bc34a; }
+.gbtn { background: #2a303b; border: 1px solid #444c5a; color: #eee; border-radius: 6px; padding: 7px 14px; font: inherit; cursor: pointer; text-decoration: none; display: inline-block; }
+.gbtn:hover { filter: brightness(1.2); }
+.gbtn.primary { background: #8bc34a; color: #10140a; border-color: #6a9a36; font-weight: 700; }
+#help { bottom: 12px; right: 12px; font-size: 12px; color: #aaa; text-align: right; }
+#loading { top: 45%; left: 50%; transform: translateX(-50%); font-size: 20px; color: #aaa; }
+#p2p-tag { top: 4px; left: 50%; transform: translateX(-50%); padding: 2px 10px; border-radius: 4px; background: rgba(243,156,18,.85); color: #000; font: bold 12px sans-serif; text-shadow: none; }
+/* replay controls */
+#replay-bar { left: 50%; bottom: 100px; transform: translateX(-50%); width: min(820px, 92vw); background: rgba(10,12,16,.85); border: 1px solid #333; border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; pointer-events: auto; text-shadow: none; }
+#replay-bar input[type=range] { flex: 1; }
+#replay-bar .t { font-variant-numeric: tabular-nums; min-width: 90px; text-align: center; font-size: 13px; }
+#replay-bar select { background: #1b1f27; color: #eee; border: 1px solid #444; border-radius: 4px; }

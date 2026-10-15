@@ -10,7 +10,7 @@ const [base, key] = process.argv.slice(2);
   await page.goto(base + '/game?replay=' + key, { waitUntil: 'domcontentloaded' });
   for (let i = 0; i < 6; i++) {
     await page.waitForTimeout(5000);
-    const st = await page.evaluate(() => typeof tagpro !== 'undefined' ? { state: tagpro.state, players: Object.keys(tagpro.players || {}).length } : null).catch((e) => 'eval failed: ' + e.message);
+    const st = await page.evaluate(() => typeof bp !== 'undefined' ? { state: bp.game.state, players: Object.keys(bp.game.players || {}).length } : null).catch((e) => 'eval failed: ' + e.message);
     console.log('t+' + (i + 1) * 5 + 's', page.url().replace(base, ''), JSON.stringify(st));
   }
   await b.close();

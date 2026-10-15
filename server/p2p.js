@@ -1,5 +1,5 @@
 // p2p.js - peer-to-peer groups, main-site side. A P2P group's games run on a player's own PC:
-// they start tagpro-local there with `npm run host -- <code>` (server/host.js), which connects
+// they start this server there with `npm run host -- <code>` (server/host.js), which connects
 // here on the /p2p-host socket. The group page still lives on this site; when the leader launches,
 // the game is created on the host and each player is sent there with a one-game ticket that
 // carries their name, flair and team (the host has no accounts of its own).

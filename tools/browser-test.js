@@ -1,4 +1,4 @@
-// Drives the real client in headless Chromium: create group -> launch -> play; logs console errors + screenshots.
+// Drives the client in headless Chromium: create group -> launch -> play; logs console errors + screenshots.
 const { chromium } = require('playwright');
 const base = process.argv[2] || 'http://localhost:3000';
 const out = __dirname + '/../ref/shots';
@@ -22,8 +22,8 @@ require('fs').mkdirSync(out, { recursive: true });
   await page.screenshot({ path: out + '/1b-public.png' });
   await page.click('#pug-btn'); await page.waitForTimeout(400);
   await page.screenshot({ path: out + '/1c-private.png' });
-  await page.evaluate(() => tagpro.group.socket.emit('setting', { name: 'time', value: '1' }));
-  await page.evaluate(() => tagpro.group.socket.emit('groupPlay'));
+  await page.evaluate(() => bpGroup.socket.emit('setting', { name: 'time', value: '1' }));
+  await page.evaluate(() => bpGroup.socket.emit('groupPlay'));
   await page.waitForURL('**/game', { timeout: 15000 });
   console.log('at', page.url());
   await page.waitForTimeout(3000);
@@ -33,7 +33,7 @@ require('fs').mkdirSync(out, { recursive: true });
   await page.waitForTimeout(500);
   await page.screenshot({ path: out + '/3-playing.png' });
   await page.waitForTimeout(5000);
-  const st = await page.evaluate(() => ({ ping: tagpro.ping, state: tagpro.state, me: tagpro.players[tagpro.playerId] && (({ x, y, rx, ry, dead, draw }) => ({ x, y, rx, ry, dead, draw }))(tagpro.players[tagpro.playerId]) }));
+  const st = await page.evaluate(() => ({ ping: bp.game.ping, state: bp.game.state, me: bp.game.me() && (({ x, y, rx, ry, dead, draw }) => ({ x, y, rx, ry, dead, draw }))(bp.game.me()) }));
   console.log('client state', JSON.stringify(st));
   await b.close();
 })().catch((e) => { console.error(e); process.exit(1); });

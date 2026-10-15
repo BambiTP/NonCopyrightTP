@@ -1,0 +1,54 @@
+<!--
+title: BambiPro
+nav: /
+script: /js/home.js
+-->
+<div class="hero">
+    <img class="logo" src="/images/logo.png" alt="BambiPro">
+    <p class="tag">Grab the enemy flag and bring it home. Pop the other team's carrier. Don't touch the spikes.</p>
+</div>
+<div id="back-to-group" class="game-banner" style="display:none" data-group="{{GROUP_ID}}">
+    You're in a group. <a class="btn btn-primary" id="back-to-group-link" href="/groups">Back to your group</a>
+</div>
+<div class="play-grid">
+    <div class="play-card">
+        <h2>Play Now</h2>
+        <p class="muted">Join the public queue. A game starts when enough players are waiting.</p>
+        <div class="muted" id="queue-casual">&nbsp;</div>
+        <a class="btn btn-primary btn-big" href="/games/find">Play Now</a>
+    </div>
+    <div class="play-card">
+        <h2>Groups</h2>
+        <p class="muted">Play with friends: pick teams, maps and settings.</p>
+        <a class="btn btn-primary" href="/groups/create">Create a Group</a>
+        <a class="btn btn-default" href="/groups">Browse Groups</a>
+    </div>
+    <div class="play-card">
+        <h2>Eggball Ranked</h2>
+        <p class="muted">Throw the egg into your end zone. Rated matches, log in required.</p>
+        <div class="muted" id="queue-ranked">&nbsp;</div>
+        <a class="btn btn-default" href="/games/find?type=ranked">Play Ranked</a>
+    </div>
+</div>
+<p class="stats-line">{{STATS_PLAYERS}} players in {{STATS_GAMES}} games &middot; {{STATS_ONLINE}} online</p>
+<div class="panel">
+    <h2>How to play</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <ul>
+                <li><b>Arrow keys</b> or <b>WASD</b>: move</li>
+                <li><b>Enter</b>: chat with everyone, <b>T</b>: chat with your team, <b>G</b>: group chat</li>
+                <li><b>Space</b>: use a held powerup (when the group allows it)</li>
+                <li><b>Esc</b>: close chat, <b>Tab</b>: hold for the scoreboard</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul>
+                <li>Touch the enemy flag to grab it, then touch your own flag to score.</li>
+                <li>Touch an enemy carrying your flag to pop them and send the flag home.</li>
+                <li>Boosts launch you; bombs blow everyone nearby away; spikes pop you.</li>
+                <li>Powerups: <b>juke juice</b> (more grip), <b>rolling bomb</b> (explodes on contact), <b>tag pro</b> (pop anyone you touch).</li>
+            </ul>
+        </div>
+    </div>
+</div>

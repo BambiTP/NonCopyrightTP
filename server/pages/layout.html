@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{TITLE}}</title>
+    <meta property="og:title" content="BambiPro">
+    <meta property="og:description" content="Capture the flag with balls. Free, in your browser.">
+    <meta property="og:url" content="{{ORIGIN}}/">
+    <meta property="og:image" content="{{ORIGIN}}/images/logo.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="inner">
+            <a class="brand" href="/"><img src="/images/logo.png" alt="BambiPro"></a>
+            <nav class="nav">{{NAV}}</nav>
+            <div class="who">{{WHO}}</div>
+        </div>
+    </header>
+    <main class="page {{PAGE_CLASS}}">
+{{BODY}}
+    </main>
+    <div class="footer">BambiPro &middot; texture packs and maps by the community &middot; <a href="https://github.com/BambiTP/NonCopyrightTP">source</a></div>
+    <div class="toast" id="toast"></div>
+    <script src="/js/site.js"></script>
+{{SCRIPTS}}
+</body>
+</html>

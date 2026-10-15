@@ -1,0 +1,17 @@
+<!--
+title: Finding a game - BambiPro
+nav: /
+script: /socket.io/socket.io.js /js/find.js
+-->
+<div class="joiner panel" id="joiner" data-group="{{GROUP_ID}}" data-private="{{PRIVATE_GROUP}}" data-type="{{JOIN_TYPE}}">
+    <div class="queue-tabs" id="queue-tabs">
+        <a class="btn {{CASUAL_ACTIVE}}" href="/games/find">Play Now</a>
+        <a class="btn {{RANKED_ACTIVE}}" href="/games/find?type=ranked">Eggball Ranked</a>
+    </div>
+    <h1 id="joiner-title">Finding a game</h1>
+    <div class="spinner"></div>
+    <p id="joiner-status" class="muted">Connecting...</p>
+    <p id="joiner-counts" class="muted"></p>
+    <p>{{RANKED_INFO}}</p>
+    <a class="btn btn-default" href="/" id="joiner-cancel">Cancel</a>
+</div>

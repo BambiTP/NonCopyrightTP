@@ -1,0 +1,79 @@
+<!--
+title: {{GROUP_NAME}} - BambiPro Group
+nav: /groups
+script: /socket.io/socket.io.js /js/group.js
+-->
+<div id="group" data-group="{{GROUP_ID}}" data-origin="{{ORIGIN}}">
+    <div class="group-top">
+        <h1 id="group-name">{{GROUP_NAME}}</h1>
+        <a class="btn btn-default" href="/groups/leave">Leave Group</a>
+    </div>
+
+    <div id="game-banner" class="game-banner" style="display:none">
+        <span id="game-banner-text">A game is running.</span>
+        <button id="end-game" class="btn btn-danger btn-sm leader-only" type="button">End Game</button>
+        <a id="join-game" class="btn btn-primary" href="/games/find">Join Game</a>
+    </div>
+
+    <div id="p2p-panel" class="p2p-box" style="display:none">
+        <div class="title">&#9888; PEER TO PEER GROUP: games here don't run on the Chicago server.</div>
+        <div id="p2p-state" style="margin-top:4px"></div>
+        <div style="margin-top:6px;opacity:.85">The host's PC runs the game, so the host can see and change anything in it (positions, scores, who gets
+            tagged) and can run their own code on the game page. Your account and login on this site stay safe either way.
+            Only play if you trust the host.</div>
+        <div id="p2p-consent" style="margin-top:10px"></div>
+        <div id="p2p-leader" style="display:none;margin-top:10px">
+            <div id="p2p-waiting"></div>
+            <button id="p2p-chicago" class="btn btn-default btn-tiny" type="button" style="margin-top:6px">Move this group to the Chicago server</button>
+            <div style="margin-top:10px">
+                To host this group's games on your PC, install <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a>, then run this in a terminal
+                (Command Prompt on Windows). No router setup needed. Keep the window open while you play.
+                <pre id="p2p-cmd" style="margin:8px 0;white-space:pre-wrap;user-select:all"></pre>
+                <button id="p2p-copy" class="btn btn-default btn-tiny" type="button">Copy</button>
+                <span class="muted">Already downloaded it? Run <code>git pull</code> in that folder, then just the last line. Keep the code to yourself: anyone with it can host this group.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="group-layout">
+        <div>
+            <div id="teams" class="teams"></div>
+            <div class="group-actions">
+                <button id="launch" class="btn btn-primary btn-big leader-only" type="button">Launch Game</button>
+                <button id="swap-teams" class="btn btn-default leader-only private-only" type="button">Swap Teams</button>
+                <button id="random-teams" class="btn btn-default leader-only private-only" type="button">Random Teams</button>
+                <button id="toggle-private" class="btn btn-default leader-only" type="button"></button>
+                <span id="not-leader" class="muted">Only the group leader can change settings and launch games.</span>
+            </div>
+            <div id="settings" class="settings"></div>
+            <div class="panel" style="margin-top:18px">
+                <h3>Presets</h3>
+                <p class="muted">A preset saves this group's settings as a short code. Share it, or paste one to load it.</p>
+                <div class="input-group">
+                    <input id="preset-text" class="form-control" placeholder="gZ...">
+                    <button id="preset-generate" class="btn btn-default" type="button">Generate</button>
+                    <button id="preset-link" class="btn btn-default" type="button">Copy Link</button>
+                    <button id="preset-apply" class="btn btn-primary leader-only" type="button">Load</button>
+                </div>
+                <div id="preset-status" class="muted" style="margin-top:6px"></div>
+            </div>
+            <div class="panel leader-only">
+                <h3>Test your own map</h3>
+                <p class="muted">Upload a map's layout PNG and logic JSON (as made by a map editor). The group plays it next.</p>
+                <form id="map-upload" class="input-group" style="flex-wrap:wrap">
+                    <label class="setting"><span>Layout (.png)</span><input type="file" name="layout" accept=".png,image/png" required></label>
+                    <label class="setting"><span>Logic (.json)</span><input type="file" name="logic" accept=".json,application/json" required></label>
+                    <button class="btn btn-default" style="align-self:flex-end">Upload</button>
+                </form>
+                <div id="upload-status" class="muted" style="margin-top:6px"></div>
+            </div>
+        </div>
+        <div>
+            <div class="chat">
+                <div id="chat-log" class="log"></div>
+                <form id="chat-form"><input id="chat-input" maxlength="120" placeholder="Chat with your group" autocomplete="off"><button class="btn btn-primary">Send</button></form>
+            </div>
+            <p class="muted" style="font-size:13px;margin-top:8px">Invite friends with this page's link. Drag players between teams<span class="private-only"> (the leader can move anyone; players can move themselves when self-assignment is on)</span>.</p>
+        </div>
+    </div>
+</div>
