@@ -61,4 +61,30 @@
     showKeys();
     BP.toast('Keys reset');
   });
+
+  // site style: [name, label, background, surface, accent]
+  var STYLES = [
+    ['slate', 'Slate', '#1b1d21', '#2e323a', '#4c8dff'], ['light', 'Light', '#f4f5f7', '#ffffff', '#2563eb'],
+    ['midnight', 'Midnight', '#0b1220', '#1a2540', '#38bdf8'], ['black', 'Black', '#000000', '#1a1a1a', '#f5f5f5'],
+    ['forest', 'Forest', '#121815', '#232e27', '#3ccf7a'], ['sand', 'Sand', '#f2ede3', '#2b2620', '#c8572a'],
+    ['grape', 'Grape', '#17131d', '#2b2436', '#b77cf7'], ['teams', 'Red & Blue', '#b3262b', '#2450b8', '#e5484d'],
+    ['steel', 'Steel', '#e9ecef', '#212529', '#0d6efd'],
+  ];
+  var styles = document.getElementById('styles');
+  function showStyles() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    styles.innerHTML = STYLES.map(function (t) {
+      return '<button type="button" class="style-pick' + (t[0] === cur ? ' selected' : '') + '" data-style="' + t[0] + '">'
+        + '<span class="sw"><i style="background:' + t[2] + '"></i><i style="background:' + t[3] + '"></i><i style="background:' + t[4] + '"></i></span>'
+        + '<span class="nm">' + BP.esc(t[1]) + '</span></button>';
+    }).join('');
+  }
+  showStyles();
+  styles.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-style]');
+    if (!b) return;
+    BP.setCookie('style', b.getAttribute('data-style'));
+    document.documentElement.setAttribute('data-theme', b.getAttribute('data-style'));
+    showStyles();
+  });
 })();

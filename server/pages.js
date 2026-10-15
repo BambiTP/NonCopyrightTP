@@ -20,6 +20,8 @@ function esc(s) {
 let statsProvider = () => ({});
 function setStatsProvider(fn) { statsProvider = fn; }
 
+// site styles (public/css/site.css), picked on the settings page
+const THEMES = ['slate', 'light', 'midnight', 'black', 'forest', 'sand', 'grape', 'teams', 'steel'];
 const NAV = [['/', 'Play'], ['/groups', 'Groups'], ['/replays', 'Replays'], ['/maps', 'Maps'], ['/leaders', 'Leaders']];
 
 // "<!--\ntitle: X\nscript: /js/a.js /js/b.js\nclass: card-page\n-->" at the top of a template
@@ -42,6 +44,7 @@ function layout(meta, body, vars) {
     TITLE: meta.title || 'BambiPro', // already escaped where it came from a variable
     NAV: nav, WHO: who, PAGE_CLASS: esc(meta.class || ''), SCRIPTS: scripts,
     ORIGIN: vars.ORIGIN || '',
+    THEME: THEMES.includes(vars.THEME) ? vars.THEME : 'slate',
   };
   return tpl('layout.html').replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (k === 'BODY' ? m : Object.hasOwn(parts, k) ? parts[k] : m))
     .replace('{{BODY}}', () => body);
@@ -183,4 +186,4 @@ function publicProfileCard(a, flairObj, games) {
     ${rows ? `<table class="table"><thead><tr><th>Date</th><th>Map</th><th>Team</th><th>Score</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : '<p style="opacity:.7">No games yet.</p>'}</div>`;
 }
 
-module.exports = { publicProfileCard, leadersCard, render, esc, groupItem, setStatsProvider, loginCard, profileCard, statsTable };
+module.exports = { THEMES, publicProfileCard, leadersCard, render, esc, groupItem, setStatsProvider, loginCard, profileCard, statsTable };

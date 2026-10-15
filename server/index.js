@@ -95,9 +95,19 @@ pages.render = (name, vars = {}) => {
   return _render(name, Object.assign({
     USER_NAME: req && req.session.account ? req.session.account.displayName : '',
     ORIGIN: pages.esc(origin(req)),
+    THEME: req ? sessions.parseCookies(req.headers.cookie).style : '',
   }, vars));
 };
 app.use((req, res, next) => requestStore.run(req, next));
+// ?style=<name> on any page switches the site style (handy for comparing them)
+app.use((req, res, next) => {
+  const st = req.query.style;
+  if (typeof st === 'string' && pages.THEMES.includes(st)) {
+    res.append('Set-Cookie', `style=${st}; Path=/; Max-Age=${60 * 60 * 24 * 365 * 5}; SameSite=Lax`);
+    req.headers.cookie = (req.headers.cookie ? req.headers.cookie + '; ' : '') + 'style=' + st;
+  }
+  next();
+});
 
 const card = (title, content, script) => pages.render('card.html', { TITLE: title, CARD: content, PAGE_SCRIPT: script || '' });
 

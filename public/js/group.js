@@ -109,28 +109,61 @@
   }
 
 
+  // the settings modal: one tab per section, then presets and custom map
+  var EXTRA_TABS = [['presets', 'Presets'], ['map', 'Custom map']];
+  var tab = 'Game';
   function buildSettings() {
-    var html = SECTIONS.map(function (sec, i) {
-      return '<details' + (i === 0 ? ' open' : '') + '><summary>' + esc(sec[0]) + '</summary><div class="grid">' + sec[1].map(function (s) {
+    $('#settings-tabs').innerHTML = SECTIONS.map(function (sec) { return sec[0]; }).concat(EXTRA_TABS.map(function (t) { return t[1]; }))
+      .map(function (name, i) {
+        var key = i < SECTIONS.length ? name : EXTRA_TABS[i - SECTIONS.length][0];
+        return '<button type="button" data-tab="' + esc(key) + '">' + esc(name) + '</button>';
+      }).join('');
+    $('#settings').innerHTML = SECTIONS.map(function (sec) {
+      return '<div class="pane grid" data-pane="' + esc(sec[0]) + '">' + sec[1].map(function (s) {
         var v = settings[s.k];
         if (s.check) return '<label class="setting check"><input type="checkbox" data-k="' + s.k + '"' + (v === true ? ' checked' : '') + '> <span>' + esc(s.label) + '</span></label>';
         if (s.num) return '<label class="setting"><span>' + esc(s.label) + '</span><input type="number" min="' + s.num[0] + '" max="' + s.num[1] + '" data-k="' + s.k + '" value="' + esc(v == null ? 0 : v) + '"></label>';
         if (s.type === 'map') {
           return '<label class="setting"><span>' + esc(s.label) + '</span><select data-k="map">' + mapOptions(v) + '</select></label>'
-            + '<label class="setting"><span>Or a Fortunate Maps ID</span><span class="input-group"><input type="text" id="fm-id" placeholder="e.g. 12345" inputmode="numeric"><button class="btn btn-default btn-sm" type="button" id="fm-go">Use</button></span></label>';
+            + '<label class="setting"><span>Or a Fortunate Maps ID</span><span class="input-group"><input type="text" id="fm-id" placeholder="e.g. 12345" inputmode="numeric"><button class="btn btn-sm" type="button" id="fm-go">Use</button></span></label>';
         }
         return '<label class="setting"><span>' + esc(s.label) + '</span><select data-k="' + s.k + '">' + optionHtml(s.opts, v) + '</select></label>';
-      }).join('') + '</div></details>';
+      }).join('') + '</div>';
     }).join('');
-    var box = $('#settings');
-    var open = $$('details', box).map(function (d) { return d.open; });
-    box.innerHTML = html;
-    if (open.length) $$('details', box).forEach(function (d, i) { d.open = open[i]; });
-    box.classList.toggle('readonly', !leader());
+    showTab(tab);
+    $('#settings-dialog').classList.toggle('readonly', !leader());
+    summary();
+  }
+  function showTab(name) {
+    tab = name;
+    $$('#settings-tabs button').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-tab') === name); });
+    $$('#settings-dialog .pane').forEach(function (p) { p.style.display = p.getAttribute('data-pane') === name ? '' : 'none'; });
+  }
+  $('#settings-tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]');
+    if (b) showTab(b.getAttribute('data-tab'));
+  });
+  $('#open-settings').addEventListener('click', function () { $('#settings-dialog').showModal(); });
+  $('#close-settings').addEventListener('click', function () { $('#settings-dialog').close(); });
+  $('#settings-dialog').addEventListener('click', function (e) { if (e.target === this) this.close(); });
+
+  // the line above the teams: the settings people care about most
+  function label(k) {
+    var spec = null;
+    SECTIONS.forEach(function (sec) { sec[1].forEach(function (s) { if (s.k === k) spec = s; }); });
+    var v = settings[k];
+    if (k === 'map') return v == null || v === 'random' ? 'Random map' : /^fm_id\//.test(v) ? 'Fortunate Maps #' + String(v).slice(6) : /^upload\//.test(v) ? 'Uploaded map' : v;
+    var o = spec && spec.opts && spec.opts.filter(function (o) { return String(o[0]) === String(v); })[0];
+    return o ? o[1] : v;
+  }
+  function summary() {
+    var caps = settings.caps ? label('caps') + ' caps' : 'no cap limit';
+    $('#settings-summary').innerHTML = '<b>' + esc(label('map')) + '</b><span>' + esc(label('mode')) + '</span><span>' + esc(label('time')) + '</span><span>' + esc(caps) + '</span>';
   }
 
   // one setting changed: update its control in place (rebuilding would close dropdowns)
   function showSetting(name) {
+    summary();
     var el = $('#settings [data-k="' + name + '"]');
     if (!el) return;
     var v = settings[name];
@@ -201,12 +234,13 @@
     $$('.private-only').forEach(function (el) { el.style.display = settings.isPrivate ? '' : 'none'; });
     if (lead) $$('.leader-only.private-only').forEach(function (el) { el.style.display = settings.isPrivate ? '' : 'none'; });
     $('#not-leader').style.display = lead ? 'none' : '';
-    $('#toggle-private').textContent = settings.isPrivate ? 'Switch to public games' : 'Switch to private games';
+    $('#toggle-private').textContent = settings.isPrivate ? 'Make teams random' : 'Pick teams';
     $('#toggle-private').title = settings.isPrivate ? 'Public: the server picks teams, anyone can join the game' : 'Private: you pick the teams';
     var name = $('#group-name');
     if (lead && !name.querySelector('input')) name.innerHTML = '<input type="text" maxlength="32" value="' + esc(settings.name || '') + '">';
     else if (!lead) name.textContent = settings.name || '';
-    $('#settings').classList.toggle('readonly', !lead);
+    $('#settings-dialog').classList.toggle('readonly', !lead);
+    $('#open-settings').textContent = lead ? 'Settings' : 'View settings';
     renderGame();
   }
 
@@ -266,7 +300,7 @@
     $('#join-game').style.display = canJoin ? '' : 'none';
     $('#game-banner-text').textContent = running ? (canJoin ? 'Your group has a game running.' : 'Your group has a game running. Join a team to play next time.') : '';
     $('#launch').disabled = running;
-    $('#launch').textContent = running ? 'Game running' : 'Launch Game';
+    $('#launch').textContent = running ? 'Game running' : 'Launch game';
   }
   $('#launch').addEventListener('click', function () { socket.emit('groupPlay'); });
   $('#end-game').addEventListener('click', function () { if (confirm('End the current game for everyone?')) socket.emit('endGame'); });

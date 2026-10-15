@@ -1,5 +1,5 @@
 <!--
-title: {{GROUP_NAME}} - BambiPro Group
+title: {{GROUP_NAME}} - BambiPro
 nav: /groups
 script: /socket.io/socket.io.js /js/group.js
 -->
@@ -12,46 +12,59 @@ script: /socket.io/socket.io.js /js/group.js
 
     <div id="game-banner" class="game-banner" style="display:none">
         <span id="game-banner-text">A game is running.</span>
-        <button id="end-game" class="btn btn-danger btn-sm leader-only" type="button">End Game</button>
-        <a id="join-game" class="btn btn-primary" href="/games/find">Join Game</a>
+        <button id="end-game" class="btn btn-danger btn-sm leader-only" type="button">End game</button>
+        <a id="join-game" class="btn btn-primary" href="/games/find">Join game</a>
     </div>
 
     <div class="group-layout">
         <div>
+            <div class="settings-bar">
+                <div id="settings-summary" class="summary"></div>
+                <button id="open-settings" class="btn" type="button">Settings</button>
+            </div>
             <div id="teams" class="teams"></div>
             <div class="group-actions">
-                <button id="launch" class="btn btn-primary btn-big leader-only" type="button">Launch Game</button>
-                <button id="swap-teams" class="btn btn-default leader-only private-only" type="button">Swap Teams</button>
-                <button id="random-teams" class="btn btn-default leader-only private-only" type="button">Random Teams</button>
-                <button id="toggle-private" class="btn btn-default leader-only" type="button"></button>
+                <button id="launch" class="btn btn-primary btn-big leader-only" type="button">Launch game</button>
+                <button id="swap-teams" class="btn leader-only private-only" type="button">Swap teams</button>
+                <button id="random-teams" class="btn leader-only private-only" type="button">Random teams</button>
+                <button id="toggle-private" class="btn leader-only" type="button"></button>
                 <span id="not-leader" class="muted">Waiting for the leader.</span>
             </div>
-            <div id="settings" class="settings"></div>
-            <div class="panel" style="margin-top:18px">
-                <h3>Presets</h3>
-                <div class="input-group">
-                    <input id="preset-text" class="form-control" placeholder="gZ...">
-                    <button id="preset-generate" class="btn btn-default" type="button">Generate</button>
-                    <button id="preset-link" class="btn btn-default" type="button">Copy Link</button>
-                    <button id="preset-apply" class="btn btn-primary leader-only" type="button">Load</button>
-                </div>
-                <div id="preset-status" class="muted" style="margin-top:6px"></div>
-            </div>
-            <div class="panel leader-only">
-                <h3>Your own map</h3>
-                <form id="map-upload" class="input-group" style="flex-wrap:wrap">
-                    <label class="setting"><span>Layout (.png)</span><input type="file" name="layout" accept=".png,image/png" required></label>
-                    <label class="setting"><span>Logic (.json)</span><input type="file" name="logic" accept=".json,application/json" required></label>
-                    <button class="btn btn-default" style="align-self:flex-end">Upload</button>
-                </form>
-                <div id="upload-status" class="muted" style="margin-top:6px"></div>
-            </div>
         </div>
-        <div>
-            <div class="chat">
-                <div id="chat-log" class="log"></div>
-                <form id="chat-form"><input id="chat-input" maxlength="120" placeholder="Chat" autocomplete="off"><button class="btn btn-primary">Send</button></form>
-            </div>
+        <div class="chat">
+            <div id="chat-log" class="log"></div>
+            <form id="chat-form"><input id="chat-input" maxlength="120" placeholder="Message" autocomplete="off"><button class="btn btn-primary">Send</button></form>
         </div>
     </div>
+
+    <dialog id="settings-dialog" class="modal">
+        <div class="modal-head">
+            <h2>Group settings</h2>
+            <span id="readonly-note" class="muted">Only the leader can change these.</span>
+            <button id="close-settings" class="btn" type="button">Done</button>
+        </div>
+        <div class="modal-body">
+            <nav id="settings-tabs" class="tabs"></nav>
+            <div class="modal-panes">
+                <div id="settings" class="settings"></div>
+                <div class="pane" data-pane="presets">
+                    <div class="input-group">
+                        <input id="preset-text" class="form-control" placeholder="Preset code">
+                        <button id="preset-generate" class="btn" type="button">Generate</button>
+                        <button id="preset-link" class="btn" type="button">Copy link</button>
+                        <button id="preset-apply" class="btn btn-primary leader-only" type="button">Load</button>
+                    </div>
+                    <p id="preset-status" class="muted"></p>
+                </div>
+                <div class="pane" data-pane="map">
+                    <form id="map-upload" class="upload">
+                        <label class="setting"><span>Layout (.png)</span><input type="file" name="layout" accept=".png,image/png" required></label>
+                        <label class="setting"><span>Logic (.json)</span><input type="file" name="logic" accept=".json,application/json" required></label>
+                        <button class="btn btn-primary leader-only">Upload</button>
+                    </form>
+                    <p id="upload-status" class="muted"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
