@@ -1,4 +1,4 @@
-// core.js - the game's state, and a handler for every packet the game server sends
+// The game's state, and a handler for every packet the game server sends
 // (engine/game.js). Live games and replays both feed packets through Game.handle(event, data).
 (function () {
   var C = TPConstants, PH = C.PHYSICS, STATES = C.STATES;

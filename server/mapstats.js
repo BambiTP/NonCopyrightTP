@@ -1,4 +1,4 @@
-// mapstats.js - data for the real Maps page (/maps.json + the /maps/ socket): the installed
+// Data for the Maps page (/maps.json + the /maps/ socket): the installed
 // rotation with this server's play counts (from replays) and players' in-game map ratings.
 const fs = require('fs');
 const path = require('path');

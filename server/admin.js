@@ -1,4 +1,4 @@
-// admin.js - admin control panel (/admin) for public (Play Now) games: map, rotation, settings,
+// Admin control panel (/admin) for public (Play Now) games: map, rotation, settings,
 // queue size. Admins are usernames listed in data/admins.json (tools/make-admin.js adds one).
 const fs = require('fs');
 const path = require('path');
@@ -25,14 +25,14 @@ const LABELS = {
   accel: 'Acceleration multiplier', topspeed: 'Top speed multiplier', bounce: 'Bounciness multiplier',
   playerRespawnTime: 'Player respawn (ms)', speedPadRespawnTime: 'Boost respawn (ms)', dynamiteRespawnTime: 'Bomb respawn (ms)',
   powerupRespawnTime: 'Powerup respawn (ms)', powerupJukeJuiceDuration: 'Juke juice duration (ms)',
-  powerupRollingBombDuration: 'Rolling bomb duration (ms)', powerupTagproDuration: 'TagPro powerup duration (ms)',
+  powerupRollingBombDuration: 'Rolling bomb duration (ms)', powerupTagproDuration: 'Tag pro duration (ms)',
   redTeamName: 'Red team name', blueTeamName: 'Blue team name', redTeamScore: 'Red starting score', blueTeamScore: 'Blue starting score',
   potatoTime: 'Potato timer (ms, 0 = off)', powerupDelay: 'Delay first powerups one cycle', lastPossession: 'Clutch time (last possession)',
   ghostMode: 'Ghost mode', localTrust: 'Local trust (no input lag; ghost mode: no player collisions only)', poosts: 'Pop/portal boosts', kissingFCs: 'Kissing flag carriers', kissingTPs: 'Kissing TagPros',
   jukeJuiceBoost: 'Juke juice spacebar boost', jukeJuiceBoostPower: 'Juke juice boost power (%)',
   rollingBombForceMultipler: 'Rolling bomb force multiplier', rollingBombDistanceMultipler: 'Rolling bomb distance multiplier',
-  spacebarDetonateAll: 'Spacebar uses all powerups', tagproMaxTags: 'TagPro powerup max tags (0 = unlimited)', gravityWellForce: 'Gravity well force',
-  powerupJukeJuice: 'Powerup: Juke juice', powerupTagPro: 'Powerup: TagPro', powerupRollingBomb: 'Powerup: Rolling bomb', combinejjrb: 'Combine juke juice + rolling bomb',
+  spacebarDetonateAll: 'Spacebar uses all powerups', tagproMaxTags: 'Tag pro max pops (0 = unlimited)', gravityWellForce: 'Gravity well force',
+  powerupJukeJuice: 'Powerup: Juke juice', powerupTagPro: 'Powerup: Tag pro', powerupRollingBomb: 'Powerup: Rolling bomb', combinejjrb: 'Combine juke juice + rolling bomb',
   jumpLimit: 'Gravity: jumps (51 = unlimited)', isPlayerJumpResetEnabled: 'Gravity: landing on players resets jumps',
   mapTestingMode: 'Map testing mode', respawnWarnings: 'Respawn warnings', pupIndicators: 'Next powerup indicators', disableAllPups: 'Disable all powerups',
 };
@@ -62,7 +62,7 @@ function installedMaps() {
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// ---- used by the queue ----
+// used by the queue
 function publicSettings() { return Object.assign({}, DEFAULT_VALUES, state.settings); }
 function gameSize() { const n = Number(state.gameSize); return Number.isInteger(n) && n >= 2 && n <= 16 && n % 2 === 0 ? n : 8; }
 function mapChoice() { return state.map || 'random'; }

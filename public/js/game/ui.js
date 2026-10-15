@@ -1,4 +1,4 @@
-// ui.js - the HTML overlay: score, clock, banners, chat, scoreboard, end-of-game panel.
+// The HTML overlay: score, clock, banners, chat, scoreboard, end-of-game panel.
 (function () {
   var STATES = TPConstants.STATES;
   var $ = function (id) { return document.getElementById(id); };
@@ -72,7 +72,7 @@
     if (this.boardHeld || g.state === STATES.ENDED) this.renderBoard();
   };
 
-  // ---- chat ----
+  // chat
   UI.prototype.chatLine = function (c) {
     if (!BP.prefs.chat && c.from != null) return;
     var g = this.game, html, cls = 'sys';
@@ -116,7 +116,7 @@
     if (text && this.opts.onChat) this.opts.onChat(mode, text);
   };
 
-  // ---- scoreboard ----
+  // scoreboard
   var COLS = [['score', 'Score'], ['s-tags', 'Tags'], ['s-pops', 'Pops'], ['s-grabs', 'Grabs'], ['s-drops', 'Drops'], ['s-hold', 'Hold'],
     ['s-captures', 'Caps'], ['s-prevent', 'Prevent'], ['s-returns', 'Returns'], ['s-support', 'Support'], ['s-powerups', 'Pups']];
   UI.prototype.showBoard = function (on) { this.boardHeld = on; $('board').classList.toggle('show', on || this.game.state === STATES.ENDED); if (on) this.renderBoard(true); };

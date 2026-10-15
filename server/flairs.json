@@ -5,7 +5,7 @@
   "x": 0,
   "y": 0,
   "description": "Deer",
-  "extra": "The BambiPro mascot.",
+  "extra": "The mascot.",
   "key": "special.deer",
   "className": "special-deer"
  },
@@ -15,7 +15,7 @@
   "x": 1,
   "y": 0,
   "description": "Star",
-  "extra": "Shine bright.",
+  "extra": "",
   "key": "special.star",
   "className": "special-star"
  },
@@ -25,7 +25,7 @@
   "x": 2,
   "y": 0,
   "description": "Heart",
-  "extra": "Good sport.",
+  "extra": "",
   "key": "special.heart",
   "className": "special-heart"
  },
@@ -35,7 +35,7 @@
   "x": 3,
   "y": 0,
   "description": "Crown",
-  "extra": "Royalty.",
+  "extra": "",
   "key": "special.crown",
   "className": "special-crown"
  },
@@ -45,7 +45,7 @@
   "x": 4,
   "y": 0,
   "description": "Diamond",
-  "extra": "Unbreakable.",
+  "extra": "",
   "key": "special.diamond",
   "className": "special-diamond"
  },
@@ -55,7 +55,7 @@
   "x": 5,
   "y": 0,
   "description": "Trophy",
-  "extra": "Winner winner.",
+  "extra": "",
   "key": "special.trophy",
   "className": "special-trophy"
  },
@@ -65,7 +65,7 @@
   "x": 6,
   "y": 0,
   "description": "Medal",
-  "extra": "Decorated.",
+  "extra": "",
   "key": "special.medal",
   "className": "special-medal"
  },
@@ -75,7 +75,7 @@
   "x": 7,
   "y": 0,
   "description": "Shield",
-  "extra": "Defender.",
+  "extra": "",
   "key": "special.shield",
   "className": "special-shield"
  },
@@ -85,7 +85,7 @@
   "x": 0,
   "y": 1,
   "description": "Anchor",
-  "extra": "Holds the fort.",
+  "extra": "",
   "key": "special.anchor",
   "className": "special-anchor"
  },
@@ -95,7 +95,7 @@
   "x": 1,
   "y": 1,
   "description": "Lightning",
-  "extra": "Fast hands.",
+  "extra": "",
   "key": "special.bolt",
   "className": "special-bolt"
  },
@@ -105,7 +105,7 @@
   "x": 2,
   "y": 1,
   "description": "Flame",
-  "extra": "On fire.",
+  "extra": "",
   "key": "special.flame",
   "className": "special-flame"
  },
@@ -115,7 +115,7 @@
   "x": 3,
   "y": 1,
   "description": "Snowflake",
-  "extra": "Ice cold.",
+  "extra": "",
   "key": "special.snow",
   "className": "special-snow"
  },
@@ -125,7 +125,7 @@
   "x": 4,
   "y": 1,
   "description": "Moon",
-  "extra": "Night owl.",
+  "extra": "",
   "key": "special.moon",
   "className": "special-moon"
  },
@@ -135,7 +135,7 @@
   "x": 5,
   "y": 1,
   "description": "Sun",
-  "extra": "Early bird.",
+  "extra": "",
   "key": "special.sun",
   "className": "special-sun"
  },
@@ -145,7 +145,7 @@
   "x": 6,
   "y": 1,
   "description": "Planet",
-  "extra": "Out of this world.",
+  "extra": "",
   "key": "special.planet",
   "className": "special-planet"
  },
@@ -155,7 +155,7 @@
   "x": 7,
   "y": 1,
   "description": "Leaf",
-  "extra": "Fresh.",
+  "extra": "",
   "key": "special.leaf",
   "className": "special-leaf"
  },
@@ -165,7 +165,7 @@
   "x": 0,
   "y": 2,
   "description": "Clover",
-  "extra": "Lucky.",
+  "extra": "",
   "key": "special.clover",
   "className": "special-clover"
  },
@@ -175,7 +175,7 @@
   "x": 1,
   "y": 2,
   "description": "Cherries",
-  "extra": "Sweet.",
+  "extra": "",
   "key": "special.cherry",
   "className": "special-cherry"
  },
@@ -185,7 +185,7 @@
   "x": 2,
   "y": 2,
   "description": "Drop",
-  "extra": "Cool and calm.",
+  "extra": "",
   "key": "special.drop",
   "className": "special-drop"
  },
@@ -195,7 +195,7 @@
   "x": 3,
   "y": 2,
   "description": "Music Note",
-  "extra": "Plays with the music on.",
+  "extra": "",
   "key": "special.note",
   "className": "special-note"
  },
@@ -205,7 +205,7 @@
   "x": 4,
   "y": 2,
   "description": "Cube",
-  "extra": "Square deal.",
+  "extra": "",
   "key": "special.cube",
   "className": "special-cube"
  },
@@ -215,7 +215,7 @@
   "x": 5,
   "y": 2,
   "description": "Ring",
-  "extra": "Goes around.",
+  "extra": "",
   "key": "special.ring",
   "className": "special-ring"
  },
@@ -225,7 +225,7 @@
   "x": 6,
   "y": 2,
   "description": "Plus",
-  "extra": "Adds up.",
+  "extra": "",
   "key": "special.plus",
   "className": "special-plus"
  },
@@ -235,7 +235,7 @@
   "x": 7,
   "y": 2,
   "description": "Bomb",
-  "extra": "Handle with care.",
+  "extra": "",
   "key": "special.bomb",
   "className": "special-bomb"
  },
@@ -245,7 +245,7 @@
   "x": 0,
   "y": 3,
   "description": "Flag",
-  "extra": "Capture it.",
+  "extra": "",
   "key": "special.flag",
   "className": "special-flag"
  },
@@ -255,7 +255,7 @@
   "x": 1,
   "y": 3,
   "description": "Red Ball",
-  "extra": "Team red.",
+  "extra": "",
   "key": "special.ballred",
   "className": "special-ballred"
  },
@@ -265,7 +265,7 @@
   "x": 2,
   "y": 3,
   "description": "Blue Ball",
-  "extra": "Team blue.",
+  "extra": "",
   "key": "special.ballblue",
   "className": "special-ballblue"
  },
@@ -275,7 +275,7 @@
   "x": 3,
   "y": 3,
   "description": "Egg",
-  "extra": "Eggball.",
+  "extra": "",
   "key": "event.egg",
   "className": "event-egg"
  },
@@ -285,7 +285,7 @@
   "x": 4,
   "y": 3,
   "description": "Pumpkin",
-  "extra": "Spooky season.",
+  "extra": "",
   "key": "event.pumpkin",
   "className": "event-pumpkin"
  },
@@ -295,7 +295,7 @@
   "x": 5,
   "y": 3,
   "description": "Ghost",
-  "extra": "Boo.",
+  "extra": "",
   "key": "event.ghost",
   "className": "event-ghost"
  },
@@ -305,7 +305,7 @@
   "x": 6,
   "y": 3,
   "description": "Pine Tree",
-  "extra": "Winter games.",
+  "extra": "",
   "key": "event.tree",
   "className": "event-tree"
  },
@@ -315,7 +315,7 @@
   "x": 7,
   "y": 3,
   "description": "Bronze",
-  "extra": "Eggball Ranked.",
+  "extra": "Ranked eggball.",
   "key": "ranked.bronze",
   "className": "ranked-bronze"
  },
@@ -325,7 +325,7 @@
   "x": 0,
   "y": 4,
   "description": "Silver",
-  "extra": "Eggball Ranked.",
+  "extra": "Ranked eggball.",
   "key": "ranked.silver",
   "className": "ranked-silver"
  },
@@ -335,7 +335,7 @@
   "x": 1,
   "y": 4,
   "description": "Gold",
-  "extra": "Eggball Ranked.",
+  "extra": "Ranked eggball.",
   "key": "ranked.gold",
   "className": "ranked-gold"
  },
@@ -345,7 +345,7 @@
   "x": 2,
   "y": 4,
   "description": "10 Degrees",
-  "extra": "Play Now wins.",
+  "extra": "Casual wins.",
   "key": "degree.10",
   "className": "degree-10"
  },
@@ -355,7 +355,7 @@
   "x": 3,
   "y": 4,
   "description": "50 Degrees",
-  "extra": "Play Now wins.",
+  "extra": "Casual wins.",
   "key": "degree.50",
   "className": "degree-50"
  },
@@ -365,7 +365,7 @@
   "x": 4,
   "y": 4,
   "description": "100 Degrees",
-  "extra": "Play Now wins.",
+  "extra": "Casual wins.",
   "key": "degree.100",
   "className": "degree-100"
  },
@@ -375,7 +375,7 @@
   "x": 5,
   "y": 4,
   "description": "180 Degrees",
-  "extra": "Play Now wins.",
+  "extra": "Casual wins.",
   "key": "degree.180",
   "className": "degree-180"
  },
@@ -385,7 +385,7 @@
   "x": 6,
   "y": 4,
   "description": "360 Degrees",
-  "extra": "Play Now wins.",
+  "extra": "Casual wins.",
   "key": "degree.360",
   "className": "degree-360"
  }

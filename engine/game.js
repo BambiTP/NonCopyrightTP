@@ -1,9 +1,5 @@
-// game.js - an authoritative TagPro game room. Transport-agnostic and isomorphic: the Node
-// server feeds it socket.io sockets, a P2P host feeds it WebRTC channels. A "client" is any
-// object with emit(event, data) and disconnect(); the room calls client.onRoomEvent hooks.
-//
-// Packet shapes/order and timings follow captures of the real server (ref/live*, ref/replays).
-// Physics mirrors the official client's prediction step exactly (same Box2D build).
+// An authoritative game room. A "client" is any object with emit(event, data) and
+// disconnect(); the room calls client.onRoomEvent hooks.
 (function () {
 const isNode = typeof module !== 'undefined' && module.exports;
 const Box2D = isNode ? require('./box2d') : globalThis.Box2D;
@@ -114,7 +110,7 @@ class GameRoom {
     this.initPowerups();
   }
 
-  // ---------- map ----------
+  // map
   indexMap() {
     for (let x = 0; x < this.W; x++) for (let y = 0; y < this.H; y++) {
       const t = this.tiles[x][y];
@@ -136,10 +132,10 @@ class GameRoom {
     if (!quiet) this.pendingTiles.push({ x, y, v });
   }
 
-  // ---------- physics ----------
+  // physics
   buildWorld() {
     this.pendingTiles = [];
-    // gravity mode: same values as the official /scripts/gravity.js the client loads
+    // gravity mode
     this.world = new Box2D.Dynamics.b2World(this.gravity ? new V(0, TU.GRAVITY_Y) : new V(0, 0), true);
     const fd = new Box2D.Dynamics.b2FixtureDef();
     const bd = new Box2D.Dynamics.b2BodyDef();
@@ -170,14 +166,14 @@ class GameRoom {
     }
     // Enemy touches are handled in BeginContact, i.e. during Step() *before* the solver runs:
     // the pop explosion is applied, then Box2D still resolves the collision against the (still
-    // present) victim. That ordering reproduces real poosts (see tools/calib/poosts.py).
+    // present) victim. That ordering reproduces real poosts.
     const listener = new Box2D.Dynamics.b2ContactListener();
     listener.BeginContact = (c) => {
       const ba = c.GetFixtureA().GetBody(), bb = c.GetFixtureB().GetBody();
       const a = ba.player, b = bb.player;
       // the egg only collides with walls; a wall hit counts for a Raptor Boat and is sent at once
       if (ba.egg || bb.egg) { this.egg.bounced = true; this.egg.sync = true; return; }
-      // the real server sends a ball's position the moment it hits something (replays: extra position
+      // send a ball's position the moment it hits something (replays: extra position
       // packets at landings/bounces); clients then correct their own prediction at once, which is
       // what keeps gravity.js's bouncier prediction (restitution 0.3) from showing a bounce
       if (a && !a.dead) this.queue(a, 'pos');
@@ -209,12 +205,12 @@ class GameRoom {
     return body;
   }
 
-  // ---------- clients ----------
+  // clients
   playerCount(team) { return Object.values(this.players).filter((p) => !team || p.team === team).length; }
   spectatorCount() { let n = 0; for (const c of this.clients) if (c.spectator && !c.recorder) n++; return n; }
   humanClients() { let n = 0; for (const c of this.clients) if (!c.recorder) n++; return n; }
 
-  // a replay recorder: joins like the real recorder (a silent "watching" spectator)
+  // a replay recorder: a silent "watching" spectator
   addRecorder(rec) {
     rec.recorder = true;
     this.addClient(rec, { id: 'recorder', name: 'recorder' }, { spectate: true, recorder: true });
@@ -367,7 +363,7 @@ class GameRoom {
     if (this.humanClients() === 0) this.onEmpty(this);
   }
 
-  // ---------- input ----------
+  // input
   handle(client, ev, d) {
     const p = client.playerId && this.players[client.playerId];
     switch (ev) {
@@ -435,7 +431,7 @@ class GameRoom {
     }
   }
 
-  // ---------- update packets ----------
+  // update packets
   queue(p, ...fields) {
     if (!this.dirty) this.dirty = new Map();
     let set = this.dirty.get(p.id);
@@ -486,7 +482,7 @@ class GameRoom {
     }
   }
 
-  // ---------- local trust ----------
+  // local trust
   isTrusted(p) { return this.localTrust && !!p && this.trusted.has(p); }
 
   // d: { x, y, vx, vy, a, ra, e } in metres / m/s, e = the player's snap epoch (lte) the client last saw
@@ -567,7 +563,7 @@ class GameRoom {
     return true;
   }
 
-  // ---------- spawning / popping ----------
+  // spawning / popping
   pickSpawn(team) {
     const list = this.spawnTiles[team];
     const total = list.reduce((a, s) => a + s.weight, 0);
@@ -673,7 +669,7 @@ class GameRoom {
     }
   }
 
-  // ---------- flags ----------
+  // flags
   flagTile(team) { const h = this.flagHome[team]; if (team === 3) return T.YELLOW_FLAG; return h.potato ? (team === 1 ? T.RED_POTATO : T.BLUE_POTATO) : (team === 1 ? T.RED_FLAG : T.BLUE_FLAG); }
   flagAtHome(team) { const h = this.flagHome[team]; return h && this.tiles[h.x][h.y] === this.flagTile(team); }
 
@@ -743,7 +739,7 @@ class GameRoom {
     this.checkWinConditions(true);
   }
 
-  // ---------- powerups / timed tiles ----------
+  // powerups / timed tiles
   enabledPups() {
     const s = this.settings, out = [];
     if (s.disableAllPups) return out;
@@ -855,7 +851,7 @@ class GameRoom {
     if (name === 'topSpeed') { p.speed = false; p.ms = PH.MAX_SPEED * s.topspeed; this.queue(p, 'speed', 'ms'); }
   }
 
-  // ---------- tile interactions ----------
+  // tile interactions
   tileAt(px, py) {
     const x = Math.round(px / PH.TILE), y = Math.round(py / PH.TILE);
     return (x >= 0 && y >= 0 && x < this.W && y < this.H) ? { x, y, t: this.tiles[x][y] } : null;
@@ -1023,7 +1019,7 @@ class GameRoom {
     p.arrivedOnPortal = d.x + ',' + d.y;
     p.teleportTick = this.tick;
     this.broadcast('sound', { s: 'teleport', v: 1 });
-    // real server: flash + explosion at the destination, and directSet so clients snap instead of easing
+    // flash + explosion at the destination, and directSet so clients snap instead of easing
     this.broadcast('bomb', { x: d.x * 40, y: d.y * 40, type: 3 });
     if (this.settings.poosts) this.explode({ x: d.x * PH.TILE, y: d.y * PH.TILE }, TU.PORTAL_RADIUS, TU.PORTAL_STRENGTH, p);
     if (!trusted) this.directSet(p);
@@ -1145,7 +1141,7 @@ class GameRoom {
     }
   }
 
-  // ---------- player vs player ----------
+  // player vs player
   // Enemy touches normally arrive via BeginContact during the step. This catches the rest:
   // contacts that were already touching (e.g. tagpro picked up mid-contact) and pairs that
   // ghost modes filter out of Box2D collisions entirely.
@@ -1207,7 +1203,7 @@ class GameRoom {
     }
   }
 
-  // ---------- gravity mode ----------
+  // gravity mode
   jumpLimit() { const n = Number(this.settings.jumpLimit); return n >= 51 ? Infinity : (Number.isFinite(n) ? n : 2); }
 
   jump(p) {
@@ -1223,7 +1219,7 @@ class GameRoom {
   // landing on the ground (a wall below the ball) restores jumps; optionally landing on a player
   // Jumps come back when the ball starts touching a surface below it (normal mostly up), whatever its
   // speed. Rolling onto a slope counts; a jump off flat ground doesn't (that contact already exists),
-  // but jumping past a ledge corner or tile seam can begin a new one, which is TagPro's triple jump.
+  // but jumping past a ledge corner or tile seam can begin a new one, the triple jump.
   // Replays: 10% fewer jump disagreements than resetting every tick the ball rests on the ground.
   landed(c, pa, pb) {
     if (!pa && !pb) return;
@@ -1235,7 +1231,7 @@ class GameRoom {
     if (pb && !pb.dead && n.y < -0.5) pb.jumpsLeft = this.jumpLimit();
   }
 
-  // ---------- eggball ----------
+  // eggball
   eggPacket() {
     const e = this.egg, b = e.body, pos = b.GetPosition(), v = b.GetLinearVelocity();
     return { id: e.id, type: 'egg', team: e.throwTeam === 2 ? 'Blue' : 'Red', directSet: false,
@@ -1329,7 +1325,7 @@ class GameRoom {
     e.body = this.world.CreateBody(bd);
     e.body.CreateFixture(fd);
     e.body.egg = true;
-    e.id = e.nextId--; // the real server numbers eggs 0, -1, -2, ...
+    e.id = e.nextId--; // eggs are numbered 0, -1, -2, ...
     e.throwTeam = team;
     e.bounced = false;
     return e.body;
@@ -1446,7 +1442,7 @@ class GameRoom {
     this.checkWinConditions(true);
   }
 
-  // ---------- main loop ----------
+  // main loop
   start() {
     this.startedAt = this.now();
     this.lastTime = this.now();
@@ -1471,7 +1467,7 @@ class GameRoom {
     const now = this.now();
     this.updateClock(now);
     if (this.playing()) {
-      // the real server checks tiles at the start of the tick, before the step, and its position
+      // tiles are checked at the start of the tick, before the step, and its position
       // snapshot goes out before the next tick's checks (a boost is announced right after a snapshot)
       this.interactions();
       for (const p of Object.values(this.players)) if (!p.dead) p.body.SetAwake(true);
@@ -1488,8 +1484,7 @@ class GameRoom {
         }
       }
       this.world.Step(PH.STEP, PH.VELOCITY_ITERATIONS, PH.POSITION_ITERATIONS);
-      // the real server adds key acceleration AFTER the world step (the official client predicts it
-      // before); replays only line up this way: 99.7% of 250 ms segments vs 94% (tools/repro)
+      // key acceleration goes after the world step
       if (!this.egg || this.egg.state === 'play') this.applyMovement(); // eggball: nobody moves outside play
       // local trust: a trusted ball stays exactly where its client last put it (no drift into
       // spikes etc. between reports); contacts from this step still count
@@ -1575,7 +1570,7 @@ class GameRoom {
     }
   }
 
-  // ---------- clock / state machine ----------
+  // clock / state machine
   setState(state, time) {
     this.state = state;
     this.broadcast('time', { time, state });

@@ -1,4 +1,4 @@
-// main.js - starts the game page: a live game (socket /game/<id>) or a replay (?replay=<key>).
+// Starts the game page: a live game (socket /game/<id>) or a replay (?replay=<key>).
 // Wires the server packets, keyboard, camera, sounds and the frame loop together.
 (function () {
   var CFG = window.GAME_CONFIG || {};
@@ -27,14 +27,8 @@
 
   renderer.resize();
   window.addEventListener('resize', function () { renderer.resize(); });
-  if (CFG.p2pHost) {
-    var tag = document.createElement('div');
-    tag.id = 'p2p-tag'; tag.className = 'hud';
-    tag.textContent = 'PEER TO PEER GAME: hosted on ' + CFG.p2pHost + '’s PC, not the Chicago server';
-    document.body.appendChild(tag);
-  }
 
-  // ---- sounds ----
+  // sounds
   var muteBtn = $('mute');
   function showMute() { muteBtn.textContent = sounds.enabled ? 'Sound on' : 'Sound off'; }
   showMute();
@@ -47,7 +41,7 @@
     if (d.eventTextures && d.eventTextures.tiles) assets.useTiles(d.eventTextures.tiles).then(function () { renderer.chunks = {}; });
   });
 
-  // ---- camera ----
+  // camera
   var spec = { follow: null, free: false, autoZoom: false };
   function alivePlayers() { return Object.keys(game.players).map(function (id) { return game.players[id]; }).filter(function (p) { return !p.dead && p.draw !== false; }); }
   function focusPoint() {
@@ -84,7 +78,7 @@
     renderer.zoom = Math.min(1, Math.min(renderer.w / (game.tiles.length * 40), renderer.h / (game.tiles[0].length * 40)));
   }
 
-  // ---- keyboard ----
+  // keyboard
   var seq = 0;
   var held = {};
   function moveKey(e) {
@@ -165,7 +159,7 @@
     ui.renderBoard(true);
   });
 
-  // ---- help line ----
+  // help line
   $('help').textContent = replayMode ? 'Space: pause · Q/W: switch player · A/S: flag carriers · Z: fit map · +/-: zoom'
     : 'Arrows/WASD move · Enter chat · T team chat' + ' · Tab scores · +/- zoom';
   game.on('arrived', function (d) {
@@ -181,7 +175,7 @@
     $('help').textContent += ' · G group chat';
   });
 
-  // ---- live game ----
+  // live game
   function startLive() {
     socket = io(CFG.socket, { transports: ['websocket', 'polling'], reconnection: false });
     window.bp.socket = socket;
@@ -204,7 +198,7 @@
     $('exit').addEventListener('click', function () { if (socket) socket.disconnect(); });
   }
 
-  // ---- replay ----
+  // replay
   function startReplay() {
     replay = new BPReplay(game, CFG.replay);
     window.bp.replay = replay;
@@ -236,7 +230,7 @@
     }).catch(function (err) { $('loading').textContent = String(err.message || err); throw err; });
   }
 
-  // ---- frame loop ----
+  // frame loop
   var last = performance.now(), fpsN = 0, fpsAt = last, fps = 0;
   function frame(now) {
     var dt = Math.min(100, now - last);

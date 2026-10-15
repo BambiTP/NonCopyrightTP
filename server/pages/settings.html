@@ -1,15 +1,15 @@
 <!--
 title: Settings - BambiPro
 nav: /settings
-script: /js/settings.js
+script: /js/game/walls.js /js/settings.js /js/textures.js
 class: card-page
 -->
 <h1>Settings</h1>
-<p class="muted">Saved in this browser.</p>
 <div class="panel" id="prefs"></div>
 <div class="panel">
     <h2>Keys</h2>
-    <p class="muted">Click a box, then press the key you want. Arrow keys always work too.</p>
     <div id="keys"></div>
-    <button id="keys-reset" class="btn btn-default btn-sm" type="button">Reset keys</button>
+    <button id="keys-reset" class="btn btn-small" type="button">Reset</button>
 </div>
+<h2 id="textures">Texture pack</h2>
+<div id="packs" class="pack-grid" data-packs="{{PACKS_JSON}}"></div>

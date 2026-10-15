@@ -1,4 +1,4 @@
-// tunnel.js - run the whole site on this PC behind a Cloudflare Tunnel:
+// Run the whole site on this PC behind a Cloudflare Tunnel:
 //   npm run tunnel                        a free quick tunnel: https://<random words>.trycloudflare.com
 //                                         (no account; the address changes every time it starts)
 //   TUNNEL_TOKEN=<token> npm run tunnel   a named tunnel from the Cloudflare dashboard: your own domain,

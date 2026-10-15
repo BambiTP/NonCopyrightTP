@@ -1,4 +1,4 @@
-// sessions.js - guest sessions keyed by the "tpid" cookie, like tagpro.koalabeast.com.
+// Guest sessions keyed by the "tpid" cookie.
 // The cookie value is a secret (it is the login): other players only ever see session.publicId.
 const crypto = require('crypto');
 
@@ -29,7 +29,7 @@ function get(id) {
     s = {
       id,
       publicId: newId(16),  // what other players see (group member id, game sessionId)
-      name: 'Some Ball',   // unregistered display name, as on the real site
+      name: 'Some Ball',   // unregistered display name
       auth: null,
       flair: null,
       groupId: null,       // group this session belongs to

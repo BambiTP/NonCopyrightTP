@@ -1,4 +1,4 @@
-// cloudflared.js - Cloudflare Tunnel helpers shared by `npm run host` and `npm run tunnel`.
+// Cloudflare Tunnel helpers shared by `npm run host` and `npm run tunnel`.
 // cloudflared is Cloudflare's tunnel program: it connects out to Cloudflare, so this PC needs no open
 // ports, router setup or certificate. Found on the PATH or in bin/, else downloaded into bin/.
 const fs = require('fs');

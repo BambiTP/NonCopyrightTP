@@ -1,4 +1,4 @@
-// constants.js - values shared by the server engine and the browser client.
+// Values shared by the server engine and the browser client.
 (function () {
 // Box2D collision categories: walls collide with everything; each team's balls have their own bit
 // so ghost modes can switch collisions off per pair.
@@ -24,7 +24,7 @@ function getMarsballCollisions(ghostMode) {
 
 const STATES = { ACTIVE: 1, ENDED: 2, COUNTDOWN: 3, INACTIVE: 4, OVERTIME: 5, EXITED: 6, CLUTCH: 7 };
 
-// Physics, straight from the client's prediction code (tagpro.world)
+// Physics
 const PHYSICS = {
   SCALE: 100,            // px per metre
   TILE: 0.4,             // metres per tile
@@ -46,8 +46,8 @@ const PHYSICS = {
   MARSBALL_RADIUS: 0.39,
 };
 
-// Gameplay tuning. Timings are measured from real replays (ref/replays); forces are
-// starting estimates to be calibrated against replays (tools/ calibration scripts).
+// Gameplay tuning. Timings are measured from replays; forces are
+// starting estimates to be calibrated against replays.
 const TUNING = {
   // ac in replays: 0.025 base, 0.031 juke juice, 0.037 team tile, 0.043 both
   JUKE_JUICE_BONUS: 0.006,
@@ -56,7 +56,7 @@ const TUNING = {
   TOP_SPEED_MAX: 3.5,           // topspeed powerup (not in public rotation)
   BOOST_SPEED: 7.5,             // m/s after a boost
   // explosions: radial dv = STRENGTH * (RADIUS - d). Refitted Oct 2026 on 16 ranked replays with the
-  // engine itself (tools/repro): velocity jump of real balls the tick of a real explosion vs the
+  // engine itself: velocity jump of real balls the tick of a real explosion vs the
   // sim with explosions off; residual sd ~0.02 m/s
   BOMB_RADIUS: 2.8, BOMB_STRENGTH: 3.90,             // 7 tiles, n=1004
   ROLLING_BOMB_RADIUS: 1.70, ROLLING_BOMB_STRENGTH: 3.31, // n=32
@@ -67,8 +67,7 @@ const TUNING = {
   AFK_WARN_MS: 25000, AFK_KICK_MS: 30000,
   MAPTEST_AFK_KICK_MS: 5 * 60000,                    // map testing mode: 5 minutes
   GRAB_INVINCIBLE_MS: 250,                           // flag carrier can't be popped right after grabbing
-  // gravity mode: world/fixture values from the official scripts/gravity.js; jump fitted to
-  // real gravity replays (ref/gravity): an up press adds ~4.4 m/s upward (median of 25 samples)
+  // gravity mode: an up press adds ~4.4 m/s upward (median of 25 samples)
   // restitution: gravity.js asks for 0.3, but in real gravity replays landings stop dead
   // (vertical speed -> 0, ratio 0.00 over 400+ landings), so the server uses 0
   GRAVITY_Y: 9.8 / 2, GRAVITY_RESTITUTION: 0, JUMP_SPEED: 4.4,

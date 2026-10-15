@@ -1,4 +1,4 @@
-// mappreview.js - BP.drawMapPreview(canvas, url): draws a map from its layout PNG (one pixel per
+// BP.drawMapPreview(canvas, url): draws a map from its layout PNG (one pixel per
 // tile, the community map format) in flat colours.
 (function () {
   // map pixel colour -> preview colour

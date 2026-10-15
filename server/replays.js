@@ -1,5 +1,5 @@
-// replays.js - records every game in the real replay format (NDJSON lines of [ms, event, data],
-// first line "recorder-metadata"), stores them in data/replays, and serves the real Replays page
+// Records every game (NDJSON lines of [ms, event, data], first line
+// "recorder-metadata"), stores them in data/replays, and serves the Replays page
 // API: /replays/data (listing/filters) and /replays/gameFile (download / viewer).
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +17,7 @@ function saveIndex() {
   fs.renameSync(INDEX + '.tmp', INDEX);
 }
 
-const hexId = () => crypto.randomBytes(12).toString('hex'); // 24 hex chars, like the real game ids
+const hexId = () => crypto.randomBytes(12).toString('hex'); // 24 hex chars
 
 // key used in /game?replay=<key>: base64(gameIdHex + userIdHex) with "+" -> "_" (client's hexToBase64)
 function keyToGameId(key) {
@@ -42,7 +42,7 @@ class Recorder {
     if (this.closed) return;
     const t = Date.now() - this.t0;
     this.lines.push(JSON.stringify([t, ev, data === undefined ? null : data]));
-    // like the real recorder: the replay follows the first player ("id"); the viewer needs it
+    // the replay follows the first player ("id"); the viewer needs it
     if (!this.idSent && ev === 'p') {
       const u = (Array.isArray(data) ? data : data && data.u || []).find((x) => x && x.id);
       if (u) { this.idSent = true; this.lines.push(JSON.stringify([t, 'id', u.id])); }
@@ -81,7 +81,7 @@ class Recorder {
   }
 }
 
-// /replays/data: same response shape as the real site
+// /replays/data
 function list(query, viewerUserId) {
   const page = Math.max(0, parseInt(query.page, 10) || 0);
   const pageSize = Math.min(50, Math.max(1, parseInt(query.pageSize, 10) || 25));

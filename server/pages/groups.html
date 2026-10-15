@@ -1,26 +1,15 @@
 <!--
 title: Groups - BambiPro
 nav: /groups
-script: /js/groups.js
 -->
-<div class="panel">
-    <h1>Create a Group</h1>
-    <form method="post" action="/groups/create" class="row" style="align-items:flex-end;gap:10px 0">
-        <div class="col-md-4"><label class="setting"><span>Group name</span><input class="form-control" name="name" maxlength="32" placeholder="Some Group"></label></div>
-        <div class="col-md-4">
-            <label class="setting check"><input type="checkbox" name="public"> <span>List it on this page</span></label>
-            <label class="setting check"><input type="checkbox" name="private" checked> <span>Private games (pick teams)</span></label>
-        </div>
-        <div class="col-md-4">
-            <button id="create-group-btn" class="btn btn-primary">Create Group</button>
-            <button id="create-p2p-group-btn" class="btn btn-secondary" formaction="/groups/create-p2p" style="margin-top:8px"
-                title="Games run on a player's own PC instead of the Chicago server">Create Peer to Peer Group</button>
-        </div>
-        <div class="col-md-12"><label class="setting"><span>Preset (optional)</span><input class="form-control" name="preset" placeholder="gZ..."></label></div>
-    </form>
-</div>
-<h2>Public Groups</h2>
+<h1>Groups</h1>
+<form method="post" action="/groups/create" class="panel create-group">
+    <label class="setting"><span>Name</span><input class="form-control" name="name" maxlength="32" placeholder="Group name"></label>
+    <label class="setting"><span>Preset</span><input class="form-control" name="preset" placeholder="optional"></label>
+    <label class="setting check"><input type="checkbox" name="public"> <span>Show it here</span></label>
+    <label class="setting check"><input type="checkbox" name="private" checked> <span>Pick teams</span></label>
+    <button id="create-group-btn" class="btn btn-primary">Create</button>
+</form>
 <div class="group-list">
 {{GROUPS_LIST}}
 </div>
-<p class="muted" id="no-groups" style="display:none">No public groups right now. Create one!</p>

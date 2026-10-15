@@ -1,4 +1,4 @@
-// site.js - helpers shared by every page (BP.*), and the player's preferences (kept in this browser).
+// Helpers shared by every page (BP.*), and the player's preferences (kept in this browser).
 (function () {
   var BP = window.BP = {};
 
@@ -41,7 +41,7 @@
     return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
   };
 
-  // ---- preferences (settings page; read by the game) ----
+  // preferences (settings page; read by the game)
   var PREF_DEFAULTS = {
     sound: true, volume: 0.7, music: false, musicVolume: 0.3,
     names: true, degrees: true, flair: true, spin: true,

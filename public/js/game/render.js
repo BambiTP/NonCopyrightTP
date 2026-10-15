@@ -1,4 +1,4 @@
-// render.js - draws the map, balls and effects on a canvas. Coordinates: tile (x, y) is centred on
+// Draws the map, balls and effects on a canvas. Coordinates: tile (x, y) is centred on
 // pixel (40x, 40y), balls are at metres * 100, the same space the server uses.
 (function () {
   var PH = TPConstants.PHYSICS;
@@ -10,44 +10,8 @@
   function suffix(t) { var s = String(t), i = s.indexOf('.'); return i < 0 ? '' : s.slice(i + 1); }
   function isWall(t) { return base(t) === 1; }
 
-  // neighbour class for the wall-piece lookup: E (empty space or off the map), F (anything else that isn't a wall), W, D1-D4
-  function wallClass(tiles, x, y) {
-    var col = tiles[x];
-    if (!col || y < 0 || y >= col.length) return 'E';
-    var t = +col[y];
-    if (t === 0) return 'E';
-    if (t === 1) return 'W';
-    if (t > 1 && t < 2) return 'D' + Math.round((t - 1) * 10);
-    return 'F';
-  }
-  // The open half of a diagonal wall shows floor if floor reaches it (across its two open edges,
-  // passing through other diagonals' open halves), black if only empty space does, else floor.
-  var OPEN_EDGES = { 1: [[0, -1], [1, 0]], 2: [[0, 1], [1, 0]], 3: [[0, 1], [-1, 0]], 4: [[0, -1], [-1, 0]] };
-  function diagonalFloors(tiles) {
-    var W = tiles.length, H = tiles[0].length, floor = {}, empty = {}, diags = [];
-    var at = function (x, y) { return x < 0 || y < 0 || x >= W || y >= H ? 0 : +tiles[x][y]; };
-    var dOf = function (t) { return t > 1 && t < 2 ? Math.round((t - 1) * 10) : 0; };
-    for (var x = 0; x < W; x++) for (var y = 0; y < H; y++) if (dOf(+tiles[x][y])) diags.push([x, y]);
-    for (var changed = true; changed;) {
-      changed = false;
-      diags.forEach(function (d) {
-        var k = d[0] + ',' + d[1];
-        OPEN_EDGES[dOf(+tiles[d[0]][d[1]])].forEach(function (e) {
-          var n = at(d[0] + e[0], d[1] + e[1]), nk = (d[0] + e[0]) + ',' + (d[1] + e[1]), f = false, em = false;
-          if (n === 0) em = true;
-          else if (dOf(n)) {
-            var facing = OPEN_EDGES[dOf(n)].some(function (o) { return o[0] === -e[0] && o[1] === -e[1]; });
-            if (facing) { f = !!floor[nk]; em = !!empty[nk]; }
-          } else if (n !== 1) f = true;
-          if (f && !floor[k]) { floor[k] = true; changed = true; }
-          if (em && !empty[k]) { empty[k] = true; changed = true; }
-        });
-      });
-    }
-    return function (x, y) { var k = x + ',' + y; return !!floor[k] || !empty[k]; };
-  }
+  var W = BPWalls;
   var STATIC = { 2: 1, 7: 1, 8: 1, 11: 1, 12: 1, 17: 1, 18: 1, 22: 1, 23: 1 }; // drawn once into the floor layer
-  var CORNERS = [[-1, 0, 0, -1, -1, -1], [1, 0, 0, -1, 1, -1], [-1, 0, 0, 1, -1, 1], [1, 0, 0, 1, 1, 1]]; // per quarter: h, v, d neighbour offsets
 
   function Renderer(canvas, game, assets) {
     this.canvas = canvas;
@@ -58,7 +22,7 @@
     this.cam = { x: 0, y: 0 };
     this.chunks = {};
     var self = this;
-    game.on('map', function () { self.chunks = {}; self.diagFloor = diagonalFloors(game.tiles); });
+    game.on('map', function () { self.chunks = {}; self.diagFloor = W.diagonalFloors(game.tiles); });
     game.on('tile', function (x, y) {
       // walls and static tiles never change; but a changed tile could border a wall piece
       if (STATIC[base(self.game.tiles[x][y])] || isWall(self.game.tiles[x][y])) self.dropChunk(x, y);
@@ -76,7 +40,7 @@
     this.dpr = dpr; this.w = w; this.h = h;
   };
 
-  // ---- cached chunks: floor (+ static tiles), splats, walls ----
+  // cached chunks: floor (+ static tiles), splats, walls
   Renderer.prototype.chunk = function (cx, cy) {
     var key = cx + ',' + cy, ch = this.chunks[key];
     if (ch) return ch;
@@ -91,7 +55,7 @@
       if (+t === 0) continue;
       if (b === 1) {
         if (+t !== 1 && this.diagFloor(x, y)) this.tileTo(fc, 'floor', px, py); // a diagonal's open half
-        this.wallTo(wc, tiles, x, y, +t, px, py, img);
+        W.draw(wc, tiles, x, y, px, py, img);
         continue;
       }
       this.tileTo(fc, 'floor', px, py);
@@ -113,19 +77,6 @@
   Renderer.prototype.tileTo = function (c, name, px, py) {
     var s = A.SPRITE[name], img = this.assets.img.tiles;
     if (s && img) c.drawImage(img, s[0] * 40, s[1] * 40, 40, 40, px, py, 40, 40);
-  };
-
-  // a wall tile is four 20 px quarters; each comes from the sheet's wall area, picked by the three
-  // neighbours touching that corner (walls.js)
-  Renderer.prototype.wallTo = function (c, tiles, x, y, t, px, py, img) {
-    if (!img) return;
-    var own = t === 1 ? 'W' : 'D' + Math.round((t - 1) * 10);
-    for (var q = 0; q < 4; q++) {
-      var o = CORNERS[q];
-      var piece = BPWalls.piece(own, q, wallClass(tiles, x + o[0], y + o[1]), wallClass(tiles, x + o[2], y + o[3]), wallClass(tiles, x + o[4], y + o[5]));
-      if (!piece) continue;
-      c.drawImage(img, piece[0] * 20, piece[1] * 20, 20, 20, px + (q % 2) * 20, py + (q >> 1) * 20, 20, 20);
-    }
   };
 
   // splats: splats.png has one 120 px row per team
@@ -153,7 +104,7 @@
     for (var i = 0; i < 3; i++) { c.beginPath(); c.arc(x, y, 6 + i * 4.5, i * 2, i * 2 + 3.6); c.stroke(); }
   }
 
-  // ---- animated / changing tiles, drawn every frame ----
+  // animated / changing tiles, drawn every frame
   Renderer.prototype.dynamicTile = function (c, t, x, y, now) {
     var b = base(t), sfx = suffix(t), cx = x * 40, cy = y * 40, a = this.assets;
     var anim = Math.floor(now / 120) % 4;
@@ -199,7 +150,7 @@
     }
   };
 
-  // ---- one frame ----
+  // one frame
   Renderer.prototype.draw = function (focus, now) {
     var c = this.c, g = this.game, dpr = this.dpr;
     c.setTransform(1, 0, 0, 1, 0, 0);

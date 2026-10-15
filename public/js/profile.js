@@ -1,4 +1,4 @@
-// profile.js - your profile card (server/pages.js profileCard): save the display name, pick a flair.
+// Your profile card (server/pages.js profileCard): save the display name, pick a flair.
 (function () {
   var form = document.querySelector('.profile form');
   var status = document.querySelector('.form-status');

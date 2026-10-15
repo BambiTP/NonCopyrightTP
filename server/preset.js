@@ -1,13 +1,12 @@
-// preset.js - official TagPro group preset format, reverse-engineered from tagpro.koalabeast.com
-// (October 2026) by generating and applying presets on the live group server. Bugs and quirks of the
-// real server are kept on purpose so presets behave exactly the same here and there.
+// Group preset codes (the "gZ..." strings). Quirks are kept on purpose so codes made
+// elsewhere load the same.
 //
 // Format: "gZ" + one entry per preset setting that differs from its default, in the order of ENTRIES.
 // An entry is a one-letter key followed by its value. Numbers are base 52 over a-z A-Z (a=0 ... Z=51),
 // most significant digit first, with a fixed width per setting. Booleans are the key alone (meaning
 // "not the default"). See ENTRIES for each setting's key, width and scale.
 const defaults = require('./groupDefaults.json');
-const MAP_CODES = require('./presetMaps.json'); // map name -> 19-char code (opaque; captured from the real server)
+const MAP_CODES = require('./presetMaps.json'); // map name -> 19-char code (opaque)
 
 const ALPHA = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const HEADER = 'gZ';
@@ -24,7 +23,7 @@ const b52 = (n, width) => {
 };
 const unb52 = (s) => [...s].reduce((n, c) => n * 52 + ALPHA.indexOf(c), 0);
 
-// raw = the base-52 number in the preset; ok(raw) = whether the real server accepts it when applying
+// raw = the base-52 number in the preset; ok(raw) = whether it's accepted when applying
 // (an out-of-range value leaves that setting as it was, without failing the preset).
 const num = (key, width, toRaw, fromRaw, ok) => ({ kind: 'num', key, width, toRaw, fromRaw, ok });
 const plain = (key, ok) => num(key, 1, (v) => v, (r) => r, ok);
@@ -34,7 +33,7 @@ const between = (lo, hi) => (r) => r >= lo && r <= hi;
 const bool = (key) => ({ kind: 'bool', key });
 const choice = (key, codes) => ({ kind: 'enum', key, codes });
 
-// Order matters: the real server writes entries in this order, whatever order they were changed in.
+// Order matters: entries are written in this order, whatever order they were changed in.
 const ENTRIES = [
   ['map', { kind: 'map', key: 'M' }],
   ['mode', choice('g', { classic: 'c', eggball: 'e', iceHockey: 'i', gravity: 'g', racing: 'r' })],
@@ -91,7 +90,7 @@ const ENTRIES = [
 const BY_KEY = Object.fromEntries(ENTRIES.map(([name, e]) => [e.key, [name, e]]));
 const DEFAULTS = Object.fromEntries(defaults.settings);
 
-// Strict comparison, like the real server: the three powerup durations default to the STRING "20000",
+// Strict comparison: the three powerup durations default to the STRING "20000",
 // and once a leader sets them they become numbers, so setting 20 seconds by hand still shows up ("VadS").
 const isDefault = (name, v) => v === DEFAULTS[name];
 
@@ -103,7 +102,7 @@ function encode(settings, modeMap) {
     if (e.kind === 'map') {
       const map = modeMap || v;
       if (!map || map === 'random') continue;
-      if (map === 'random_ctf' || map === 'random_nf') { out += map; continue; } // written raw, no key (real server bug)
+      if (map === 'random_ctf' || map === 'random_nf') { out += map; continue; } // written raw, no key
       let body;
       if (String(map).startsWith('fm_id/')) {
         const id = parseInt(map.slice(6), 10);
@@ -133,7 +132,7 @@ function encode(settings, modeMap) {
 }
 
 // Parse a preset (or a ".../groups/create?preset=..." link). Returns { name: value } for the entries it
-// holds, or null if the real server would reject it ("This is not a valid Group Preset.").
+// holds, or null if it's invalid ("This is not a valid Group Preset.").
 function parse(input) {
   let p = String(input == null ? '' : input).trim();
   if (p.includes('preset=')) p = p.split('preset=')[1];
@@ -141,7 +140,7 @@ function parse(input) {
   const out = {};
   let i = HEADER.length;
   while (i < p.length) {
-    // random CTF / NF are written without a key and the real server can't read them back (kept as is)
+    // random CTF / NF are written without a key and can't be read back
     if (p.startsWith('random_', i)) return null;
     const k = p[i++];
     const hit = BY_KEY[k];
@@ -185,13 +184,13 @@ function parse(input) {
   return out;
 }
 
-// Apply a parsed preset to settings the way the real server does: every preset setting goes back to its
+// Apply a parsed preset to settings : every preset setting goes back to its
 // default unless the preset sets it; a numeric value out of range leaves that one setting unchanged;
 // settings presets don't carry (group name, privacy, team names and scores, self assignment) are untouched.
 // Returns { changed: [names], modeMap }.
 function apply(settings, parsed) {
   const changed = [];
-  // loose comparison, like the real server: a duration still at the string "20000" isn't touched by a
+  // loose comparison: a duration still at the string "20000" isn't touched by a
   // reset to the number 20000, but one that was changed comes back as the number (and so stays in presets)
   const set = (name, v) => {
     if (JSON.stringify(settings[name]) === JSON.stringify(v)) return;

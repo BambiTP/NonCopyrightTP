@@ -1,4 +1,4 @@
-/* game.css - the game page: a full-window canvas with an HTML overlay */
+/* the game page: a full-window canvas with an HTML overlay */
 html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: #fff; font: 14px "Segoe UI", Roboto, Arial, sans-serif; }
 canvas#game { position: fixed; inset: 0; display: block; }
 .hud { position: fixed; pointer-events: none; text-shadow: 0 1px 2px #000, 0 0 3px #000; }
@@ -43,7 +43,6 @@ canvas#game { position: fixed; inset: 0; display: block; }
 .gbtn.primary { background: #8bc34a; color: #10140a; border-color: #6a9a36; font-weight: 700; }
 #help { bottom: 12px; right: 12px; font-size: 12px; color: #aaa; text-align: right; }
 #loading { top: 45%; left: 50%; transform: translateX(-50%); font-size: 20px; color: #aaa; }
-#p2p-tag { top: 4px; left: 50%; transform: translateX(-50%); padding: 2px 10px; border-radius: 4px; background: rgba(243,156,18,.85); color: #000; font: bold 12px sans-serif; text-shadow: none; }
 /* replay controls */
 #replay-bar { left: 50%; bottom: 100px; transform: translateX(-50%); width: min(820px, 92vw); background: rgba(10,12,16,.85); border: 1px solid #333; border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; pointer-events: auto; text-shadow: none; }
 #replay-bar input[type=range] { flex: 1; }

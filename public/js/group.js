@@ -1,9 +1,8 @@
-// group.js - the group page. Talks to the group socket (/groups/<id>, server/groups.js):
-//   in:  you, member, removed, setting, game, servers, loaded, chat, play, p2p, groupKick, full,
+// The group page. Talks to the group socket (/groups/<id>, server/groups.js):
+//   in:  you, member, removed, setting, game, loaded, chat, play, groupKick, full,
 //        groupPreset, groupPresetResult
 //   out: touch, chat, team, setting, leader, kick, pub, pug, swapTeams, randomTeams, groupPlay,
-//        endGame, groupPresetGenerate, groupPresetApply, applyPersonalMute, removePersonalMute,
-//        p2pStatus, p2pAgree
+//        endGame, groupPresetGenerate, groupPresetApply, applyPersonalMute, removePersonalMute
 (function () {
   var $ = BP.$, $$ = BP.$$, esc = BP.esc;
   var root = $('#group');
@@ -14,7 +13,6 @@
   var members = {};         // id -> member
   var settings = {};        // name -> value
   var game = { gameId: null };
-  var servers = [];
   var mapList = [];
   var loaded = false;
 
@@ -22,7 +20,7 @@
   window.bpGroup = { socket: socket, members: members, settings: settings }; // for tests and the console
   var leader = function () { return !!(members[me] && members[me].leader); };
 
-  // ---------------------------------------------------------------- settings schema
+  // settings schema
   var range = function (a, b, step, fmt) { var o = []; for (var v = a; v <= b + 1e-9; v += step) { var n = Math.round(v * 100) / 100; o.push([n, fmt ? fmt(n) : String(n)]); } return o; };
   var pct = function (v) { return Math.round(v * 100) + '%'; };
   var secs = function (list) { return list.map(function (s) { return [s * 1000, s === 0 ? 'Instant' : s + ' s']; }); };
@@ -87,8 +85,6 @@
     ]],
     ['Group', [
       { k: 'discoverable', label: 'List this group on the Groups page', check: true },
-      { k: 'serverSelect', label: 'Choose the server', check: true },
-      { k: 'server', type: 'server', label: 'Server' },
     ]],
   ];
 
@@ -112,9 +108,6 @@
     return optionHtml(opts, v);
   }
 
-  function serverOptions(value) {
-    return optionHtml([[null, 'Automatic']].concat(servers.map(function (s) { return [s.value, s.name]; })), value).replace('value=""', 'value="null"');
-  }
 
   function buildSettings() {
     var html = SECTIONS.map(function (sec, i) {
@@ -126,7 +119,6 @@
           return '<label class="setting"><span>' + esc(s.label) + '</span><select data-k="map">' + mapOptions(v) + '</select></label>'
             + '<label class="setting"><span>Or a Fortunate Maps ID</span><span class="input-group"><input type="text" id="fm-id" placeholder="e.g. 12345" inputmode="numeric"><button class="btn btn-default btn-sm" type="button" id="fm-go">Use</button></span></label>';
         }
-        if (s.type === 'server') return '<label class="setting"><span>' + esc(s.label) + '</span><select data-k="server">' + serverOptions(v) + '</select></label>';
         return '<label class="setting"><span>' + esc(s.label) + '</span><select data-k="' + s.k + '">' + optionHtml(s.opts, v) + '</select></label>';
       }).join('') + '</div></details>';
     }).join('');
@@ -144,7 +136,6 @@
     var v = settings[name];
     if (el.type === 'checkbox') el.checked = v === true;
     else if (name === 'map') el.innerHTML = mapOptions(v);
-    else if (name === 'server') el.innerHTML = serverOptions(v);
     else if (el.tagName === 'SELECT') {
       var spec = null;
       SECTIONS.forEach(function (sec) { sec[1].forEach(function (s) { if (s.k === name) spec = s; }); });
@@ -164,7 +155,7 @@
     if (id) socket.emit('setting', { name: 'map', value: 'fm_id/' + id });
   });
 
-  // ---------------------------------------------------------------- members
+  // members
   function memberHtml(m) {
     var mine = m.id === me;
     var canDrag = leader() || (mine && settings.selfAssignment);
@@ -266,7 +257,7 @@
     $$('.team-box').forEach(function (b) { b.classList.remove('drop-ok'); });
   });
 
-  // ---------------------------------------------------------------- game + leader buttons
+  // game + leader buttons
   function renderGame() {
     var running = !!game.gameId;
     $('#game-banner').style.display = running ? '' : 'none';
@@ -283,7 +274,7 @@
   $('#random-teams').addEventListener('click', function () { socket.emit('randomTeams'); });
   $('#toggle-private').addEventListener('click', function () { socket.emit(settings.isPrivate ? 'pub' : 'pug'); });
 
-  // ---------------------------------------------------------------- chat
+  // chat
   var log = $('#chat-log');
   function addChat(html) {
     var atBottom = log.scrollTop + log.clientHeight >= log.scrollHeight - 30;
@@ -300,8 +291,12 @@
     input.value = '';
   });
 
-  // ---------------------------------------------------------------- presets + map upload
+  // presets + map upload
   $('#preset-generate').addEventListener('click', function () { socket.emit('groupPresetGenerate'); });
+  $('#copy-link').addEventListener('click', function () {
+    if (navigator.clipboard) navigator.clipboard.writeText(location.href);
+    BP.toast('Link copied');
+  });
   $('#preset-link').addEventListener('click', function () { socket.emit('groupPresetGenerate'); copyLink = true; });
   $('#preset-apply').addEventListener('click', function () {
     var t = $('#preset-text').value.trim();
@@ -332,34 +327,7 @@
       .catch(function () { status.textContent = 'Upload failed.'; });
   });
 
-  // ---------------------------------------------------------------- peer to peer
-  socket.on('p2p', function (st) {
-    $('#p2p-panel').style.display = st.on ? '' : 'none';
-    $('#p2p-state').innerHTML = st.connected
-      ? 'Games are hosted on <b>' + esc(st.hostName) + '</b>’s PC (<span class="muted">' + esc(st.url) + '</span>).'
-      : 'Nobody is hosting yet.' + (st.code ? '' : ' The group leader can host from their PC.');
-    $('#p2p-consent').innerHTML = st.agreed
-      ? '<b style="color:var(--accent)">&#10003; You agreed to be sent to this group’s peer-to-peer games.</b> '
-        + '<button class="btn btn-default btn-tiny" type="button" data-agree="false">Stop sending me to games</button>'
-      : '<b>You will not be sent to games in this group until you agree.</b><br>'
-        + '<button class="btn btn-primary btn-tiny" type="button" data-agree="true" style="margin-top:6px">I trust the host: send me to games</button> '
-        + '<a class="btn btn-default btn-tiny" href="/groups/leave" style="margin-top:6px">Leave group</a>';
-    $('#p2p-leader').style.display = st.code ? '' : 'none';
-    $('#p2p-waiting').innerHTML = st.notAgreed && st.notAgreed.length
-      ? 'Haven’t agreed yet (won’t be sent to games): <b>' + st.notAgreed.map(esc).join(', ') + '</b>' : '';
-    if (st.code) $('#p2p-cmd').textContent = 'git clone https://github.com/BambiTP/NonCopyrightTP\ncd NonCopyrightTP\nnpm install\nnpm run host -- ' + st.code;
-  });
-  $('#p2p-consent').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-agree]');
-    if (b) socket.emit('p2pAgree', b.getAttribute('data-agree') === 'true');
-  });
-  $('#p2p-chicago').addEventListener('click', function () { socket.emit('setting', { name: 'server', value: 'chicago' }); });
-  $('#p2p-copy').addEventListener('click', function () {
-    if (navigator.clipboard) navigator.clipboard.writeText($('#p2p-cmd').textContent);
-    this.textContent = 'Copied';
-  });
-
-  // ---------------------------------------------------------------- socket
+  // socket
   socket.on('connect', function () { socket.emit('touch', 'group page'); });
   socket.on('you', function (id) { me = id; render(); });
   socket.on('member', function (m) {
@@ -375,7 +343,6 @@
     showSetting(d.name);
     renderRole();
   });
-  socket.on('servers', function (list) { servers = list || []; if (loaded) showSetting('server'); });
   socket.on('game', function (g) { game = g || { gameId: null }; renderGame(); });
   socket.on('loaded', function () {
     loaded = true;

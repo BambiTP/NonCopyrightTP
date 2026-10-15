@@ -1,4 +1,4 @@
-// trust.js - the "Local trust" group setting, client half. The server sends GameRoom.trustConfig()
+// The "Local trust" group setting, client half. The server sends GameRoom.trustConfig()
 // in the page config when it's on. Your ball is simulated only here, like an offline game:
 //  - movement keys apply immediately, and the server never sends your own position back except
 //    for a hard snap (spawn, death, rejected report), which carries directSet

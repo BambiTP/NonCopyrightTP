@@ -44,7 +44,7 @@ chown -R tagpro:tagpro "$APP_DIR"
 echo "== systemd service (listens on localhost only; ${TUNNEL_TOKEN:+cloudflared}${TUNNEL_TOKEN:-Caddy} is the public front)"
 cat > /etc/systemd/system/tagpro.service <<UNIT
 [Unit]
-Description=TagPro local server
+Description=BambiPro
 After=network.target
 
 [Service]

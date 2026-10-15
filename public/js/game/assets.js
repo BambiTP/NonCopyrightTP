@@ -1,4 +1,4 @@
-// assets.js - texture pack images, sprite positions in the community tile-sheet layout, and sounds.
+// Texture pack images, sprite positions in the community tile-sheet layout, and sounds.
 (function () {
   // tiles.png: 40 px cells; the left 12 columns are wall pieces (see walls.js)
   var SPRITE = {
@@ -62,7 +62,7 @@
     c.drawImage(img, frame * 40, 0, 40, 40, x - 20, y - 20, 40, 40);
   };
 
-  // ---- sounds ----
+  // sounds
   var SOUND_FILES = ['alert', 'alertlong', 'bing', 'burst', 'cheering', 'click', 'countdown', 'degreeup', 'drop', 'explosion',
     'friendlyalert', 'friendlydrop', 'go', 'mark', 'overtime', 'pop', 'powerup', 'sigh', 'teleport', 'wind', 'ranked-ready', 'ranked-reminder'];
   var ALIAS = { throw: 'click' }; // event sounds without a file of their own
@@ -87,7 +87,7 @@
     if (p && p.catch) p.catch(function () { /* autoplay blocked until the first key press */ });
   };
 
-  // ---- music (community tracks, downloaded on the server by deploy/fetch-music.sh) ----
+  // music (community tracks, downloaded on the server by deploy/fetch-music.sh)
   function Music() { this.audio = null; this.list = null; }
   Music.prototype.start = function () {
     if (!BP.prefs.music || this.audio) return;

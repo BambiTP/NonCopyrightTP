@@ -1,5 +1,4 @@
-// accounts.js - simple username/password accounts (local replacement for the real site's
-// Google/etc. logins). Stored in data/accounts.json; logins (tpid cookie -> username) persist in
+// Username/password accounts, stored in data/accounts.json; logins (tpid cookie -> username) persist in
 // data/logins.json so restarts don't log people out.
 const fs = require('fs');
 const path = require('path');
@@ -110,7 +109,7 @@ function setFlair(session, key) {
   return { success: true };
 }
 
-// ---- public game stats + degrees (gentle curve: degrees 1-5 need 1 win each, 6-10 need 2 each, ...)
+// public game stats + degrees (gentle curve: degrees 1-5 need 1 win each, 6-10 need 2 each, ...)
 const STAT_KEYS = ['tags', 'pops', 'grabs', 'drops', 'hold', 'captures', 'prevent', 'returns', 'support', 'powerups'];
 function winsForDegree(d) { let w = 0; for (let l = 1; l <= d; l++) w += Math.ceil(l / 5); return w; }
 function degreeFor(wins) { let d = 0; while (d < 360 && winsForDegree(d + 1) <= wins) d++; return d; }

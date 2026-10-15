@@ -1,4 +1,4 @@
-// find.js - the joiner (/games/find): waits in the Play Now / ranked queue, or forwards a group
+// The joiner (/games/find): waits in the Play Now / ranked queue, or forwards a group
 // member to their group's game. Server side: games.js attachJoiner, queue.js, ranked.js.
 (function () {
   var box = document.getElementById('joiner');

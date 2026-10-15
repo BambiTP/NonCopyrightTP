@@ -1,5 +1,4 @@
-// mapLoader.js - TagPro PNG+JSON map -> the tile grid the official server sends in its
-// "map" packet. Grid is column-major (tiles[x][y]), exactly like the real packet.
+// PNG+JSON map -> the tile grid sent in the "map" packet. Column-major (tiles[x][y]).
 // Isomorphic: pass a decoded image as { width, height, data: RGBA Uint8Array }.
 (function () {
 
@@ -40,7 +39,7 @@ const GATE_STATE = { off: 9, on: 9.1, red: 9.2, blue: 9.3 };
 
 function hex2(n) { return (n < 16 ? '0' : '') + n.toString(16); }
 
-// image: { width, height, data } ; json: Fortunate Maps / TagPro map JSON
+// image: { width, height, data } ; json: Fortunate Maps map JSON
 function loadMap(image, json) {
   json = json || {};
   const fields = json.fields || {}, portals = json.portals || {};
@@ -60,7 +59,7 @@ function loadMap(image, json) {
         const st = fields[key] && fields[key].defaultState;
         t = GATE_STATE[(st || 'off').toLowerCase()] ?? 9;
       }
-      // portals with no destination are exit-only; the real server sends them as "13.1"
+      // portals with no destination are exit-only, sent as "13.1"
       // (string, the inactive-portal look), same for team portals 24/25
       if ((t === 13 || t === 24 || t === 25) && !(portals[key] && portals[key].destination)) t = String(t + 0.1);
       tiles[x][y] = t;

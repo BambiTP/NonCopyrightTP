@@ -1,19 +1,19 @@
-// settings.js - the settings page: preferences and key bindings, saved in this browser (BP.prefs).
+// Preferences and key bindings, saved in this browser (BP.prefs).
 (function () {
   var P = BP.prefs;
   var ROWS = [
-    ['sound', 'Sound effects', 'check'],
-    ['volume', 'Sound volume', 'range'],
-    ['music', 'Music', 'check', 'Plays the community music tracks during games, when the server has them.'],
+    ['sound', 'Sound', 'check'],
+    ['volume', 'Volume', 'range'],
+    ['music', 'Music', 'check'],
     ['musicVolume', 'Music volume', 'range'],
-    ['names', 'Show player names', 'check'],
-    ['degrees', 'Show degrees next to names', 'check'],
-    ['flair', 'Show flair', 'check'],
-    ['spin', 'Spin balls as they roll', 'check'],
-    ['chat', 'Show chat in games', 'check'],
-    ['chatLines', 'Chat lines in games', 'number'],
-    ['fps', 'Show FPS and ping', 'check'],
-    ['scoreboardStats', 'Show every stat on the scoreboard', 'check'],
+    ['names', 'Names', 'check'],
+    ['degrees', 'Degrees', 'check'],
+    ['flair', 'Flair', 'check'],
+    ['spin', 'Ball spin', 'check'],
+    ['chat', 'Chat', 'check'],
+    ['chatLines', 'Chat lines', 'number'],
+    ['fps', 'FPS and ping', 'check'],
+    ['scoreboardStats', 'Full scoreboard', 'check'],
   ];
   var box = document.getElementById('prefs');
   box.innerHTML = ROWS.map(function (r) {

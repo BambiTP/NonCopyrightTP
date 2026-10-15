@@ -1,4 +1,4 @@
-// replay.js - plays a recorded game (/replays/gameFile, one [ms, event, data] JSON array per line)
+// Plays a recorded game (/replays/gameFile, one [ms, event, data] JSON array per line)
 // through the same Game state as a live game, on a virtual clock that can pause, change speed and seek.
 (function () {
   function Replay(game, key) {

@@ -1,5 +1,5 @@
-// queue.js - public matchmaking for "Play Now": players wait in the joiner until 8 are queued,
-// then a public game starts with 4 on each team. Uses the real joiner messages: "Full" with
+// Public matchmaking for "Play Now": players wait in the joiner until 8 are queued,
+// then a public game starts with 4 on each team. Joiner messages: "Full" with
 // `considering` shows "Looking for a game", serverStatsUpdated shows "playing | queued" counts.
 const admin = require('./admin');
 const GAME_SIZE = () => admin.gameSize();

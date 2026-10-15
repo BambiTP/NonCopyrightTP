@@ -1,4 +1,4 @@
-// games.js - creates/tracks game rooms, map selection, and the joiner (/games/find).
+// Creates/tracks game rooms, map selection, and the joiner (/games/find).
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -20,7 +20,7 @@ function gameId() {
   return s;
 }
 
-// ---- maps: maps/<key>.png + maps/<key>.json ; key is a Fortunate Maps id or a name ----
+// maps: maps/<key>.png + maps/<key>.json ; key is a Fortunate Maps id or a name
 function mapKeys() {
   return fs.readdirSync(MAPS_DIR).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))
     .filter((k) => fs.existsSync(path.join(MAPS_DIR, k + '.json')));
@@ -118,7 +118,7 @@ async function resolveMap(setting, pool) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-// ---- public game stats (Play Now games only) ----
+// public game stats (Play Now games only)
 function recordStats(room, winner) {
   const accounts = require('./accounts');
   for (const p of Object.values(room.players)) {
@@ -136,8 +136,8 @@ function recordStats(room, winner) {
   }
 }
 
-// ---- rooms ----
-// onFinish: called once when the game ends or empties (a peer-to-peer host tells the main site)
+// rooms
+// onFinish: called once when the game ends or empties
 function createGame({ mapKey, settings, isPrivate, groupId, onFinish }) {
   const map = readMap(mapKey);
   const id = gameId();
@@ -194,7 +194,7 @@ function endGame(id) {
   if (r && !r.ended) r.end(r.score.r > r.score.b ? 'red' : r.score.b > r.score.r ? 'blue' : 'tie', false);
 }
 
-// ---- joiner: /games/find ----
+// joiner: /games/find
 function attachJoiner(io) {
   io.of('/games/find').on('connection', async (socket) => {
     const session = sessions.fromSocket(socket);
@@ -208,16 +208,7 @@ function attachJoiner(io) {
     const go = async () => {
       if (sent) return;
       let pg = session.pendingGame;
-      // peer-to-peer group: the game is on a player's PC
-      if (g && g.game.gameServer === 'p2p') {
-        sent = true;
-        const mem = g.members.get(session.publicId);
-        if (!mem || !mem.p2pOk) return socket.emit('SendToPage', { url: '/groups/' + g.id, reason: "You haven't agreed to play this group's peer-to-peer games" });
-        if (!pg || !pg.p2p || pg.id !== g.game.gameId) pg = await require('./p2p').lateTicket(g, session);
-        if (!pg) return socket.emit('SendToPage', { url: '/groups/' + g.id, reason: 'No game running for your group' });
-        return setTimeout(() => socket.emit('FoundWorld', { url: pg.url, spectate: pg.spectate || null }), 500);
-      }
-      if (!pg || pg.p2p || !games.has(pg.id) || games.get(pg.id).ended) {
+      if (!pg || !games.has(pg.id) || games.get(pg.id).ended) {
         if (g && g.game.gameId && games.has(g.game.gameId)) pg = session.pendingGame = { id: g.game.gameId, team: null, spectate: false };
         else if (!g) { sent = true; socket.emit('serverStatsUpdated', queue.statsPacket()); return (session.joinType === 'ranked' ? ranked : queue).join(session, socket); }
         else return socket.emit('SendToPage', { url: '/groups/' + g.id, reason: 'No game running for your group' });
@@ -230,7 +221,7 @@ function attachJoiner(io) {
   });
 }
 
-// ---- game sockets: /game/<id> ----
+// game sockets: /game/<id>
 function attachGames(io) {
   io.of(/^\/game\/[a-z]{8}$/).on('connection', (socket) => {
     const room = games.get(socket.nsp.name.slice(6));

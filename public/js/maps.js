@@ -1,4 +1,4 @@
-// maps.js - the Maps page: the rotation with play counts and ratings (socket /maps/, server/mapstats.js).
+// The Maps page: the rotation with play counts and ratings (socket /maps/, server/mapstats.js).
 (function () {
   var grid = document.getElementById('maps');
   var maps = [], votes = {}, loggedIn = false;

@@ -1,4 +1,4 @@
-// physics.js - client-side prediction. Builds the same Box2D world as the server (engine/game.js
+// Client-side prediction. Builds the same Box2D world as the server (engine/game.js
 // buildWorld/createBody, same Box2D build and constants) and steps it at 60 Hz. Every ball moves
 // with its owner's last known keys; server position updates replace the simulated state, and the
 // jump is hidden by easing the drawn position (Ball.off*) back to the body.

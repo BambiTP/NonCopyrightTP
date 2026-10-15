@@ -1,4 +1,4 @@
-// Box2DWeb exactly as bundled in the official TagPro client (global-game.js), extracted by tools/.
+// Box2DWeb (zlib license, https://code.google.com/archive/p/box2dweb/).
 (function () {
 var Box2D = {};
 ! function(t, e) {

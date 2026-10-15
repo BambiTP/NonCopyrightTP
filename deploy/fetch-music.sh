@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Downloads the in-game music list (public/music.json) from the TagPro CDN into public/sounds/music.
+# Downloads the in-game music list (public/music.json) from the original game's CDN into public/sounds/music.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p public/sounds/music

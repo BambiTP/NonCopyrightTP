@@ -1,4 +1,4 @@
-// walls.js - which 20 px piece of a tile sheet's wall area (the left 12 x 11 tiles) draws each
+// Which 20 px piece of a tile sheet's wall area (the left 12 x 11 tiles) draws each
 // quarter of a wall tile. A quarter's piece depends on the wall tile's own shape (W = square, D1-D4 =
 // the four diagonals: 1.1-1.4) and the three neighbours touching that corner: horizontal, vertical,
 // diagonal, each N (not a wall), W or D1-D4. Measured from the community texture template's layout
@@ -27,5 +27,72 @@
     }
     return (cache[key] = r);
   }
-  window.BPWalls = { piece: piece };
+
+  // neighbour class for the wall-piece lookup: E (empty space or off the map), F (anything else that isn't a wall), W, D1-D4
+  function wallClass(tiles, x, y) {
+    var col = tiles[x];
+    if (!col || y < 0 || y >= col.length) return 'E';
+    var t = +col[y];
+    if (t === 0) return 'E';
+    if (t === 1) return 'W';
+    if (t > 1 && t < 2) return 'D' + Math.round((t - 1) * 10);
+    return 'F';
+  }
+  // The open half of a diagonal wall shows floor if floor reaches it (across its two open edges,
+  // passing through other diagonals' open halves), black if only empty space does, else floor.
+  var OPEN_EDGES = { 1: [[0, -1], [1, 0]], 2: [[0, 1], [1, 0]], 3: [[0, 1], [-1, 0]], 4: [[0, -1], [-1, 0]] };
+  function diagonalFloors(tiles) {
+    var W = tiles.length, H = tiles[0].length, floor = {}, empty = {}, diags = [];
+    var at = function (x, y) { return x < 0 || y < 0 || x >= W || y >= H ? 0 : +tiles[x][y]; };
+    var dOf = function (t) { return t > 1 && t < 2 ? Math.round((t - 1) * 10) : 0; };
+    for (var x = 0; x < W; x++) for (var y = 0; y < H; y++) if (dOf(+tiles[x][y])) diags.push([x, y]);
+    for (var changed = true; changed;) {
+      changed = false;
+      diags.forEach(function (d) {
+        var k = d[0] + ',' + d[1];
+        OPEN_EDGES[dOf(+tiles[d[0]][d[1]])].forEach(function (e) {
+          var n = at(d[0] + e[0], d[1] + e[1]), nk = (d[0] + e[0]) + ',' + (d[1] + e[1]), f = false, em = false;
+          if (n === 0) em = true;
+          else if (dOf(n)) {
+            var facing = OPEN_EDGES[dOf(n)].some(function (o) { return o[0] === -e[0] && o[1] === -e[1]; });
+            if (facing) { f = !!floor[nk]; em = !!empty[nk]; }
+          } else if (n !== 1) f = true;
+          if (f && !floor[k]) { floor[k] = true; changed = true; }
+          if (em && !empty[k]) { empty[k] = true; changed = true; }
+        });
+      });
+    }
+    return function (x, y) { var k = x + ',' + y; return !!floor[k] || !empty[k]; };
+  }
+  var CORNERS = [[-1, 0, 0, -1, -1, -1], [1, 0, 0, -1, 1, -1], [-1, 0, 0, 1, -1, 1], [1, 0, 0, 1, 1, 1]]; // per quarter: h, v, d neighbour offsets
+
+  // draws wall tile (x, y) at (px, py) from a tile sheet: four 20 px quarters
+  function draw(c, tiles, x, y, px, py, img) {
+    var t = +tiles[x][y];
+    if (!img || !(t >= 1 && t < 2)) return;
+    var own = t === 1 ? 'W' : 'D' + Math.round((t - 1) * 10);
+    for (var q = 0; q < 4; q++) {
+      var o = CORNERS[q];
+      var p = piece(own, q, wallClass(tiles, x + o[0], y + o[1]), wallClass(tiles, x + o[2], y + o[3]), wallClass(tiles, x + o[4], y + o[5]));
+      if (p) c.drawImage(img, p[0] * 20, p[1] * 20, 20, 20, px + (q % 2) * 20, py + (q >> 1) * 20, 20, 20);
+    }
+  }
+
+  // a whole small map: floor under everything that isn't empty, then walls. extra(x, y, t, px, py)
+  // draws anything else on top. Used by the texture previews and the site header.
+  function drawMap(c, tiles, img, extra) {
+    if (!img) return;
+    var diag = diagonalFloors(tiles);
+    for (var x = 0; x < tiles.length; x++) for (var y = 0; y < tiles[x].length; y++) {
+      var t = +tiles[x][y], px = x * 40, py = y * 40;
+      if (t === 0) continue;
+      if (t === 1) { draw(c, tiles, x, y, px, py, img); continue; }
+      if (t < 2 && !diag(x, y)) { draw(c, tiles, x, y, px, py, img); continue; }
+      c.drawImage(img, 13 * 40, 4 * 40, 40, 40, px, py, 40, 40);
+      if (t < 2) draw(c, tiles, x, y, px, py, img);
+      else if (extra) extra(x, y, t, px, py);
+    }
+  }
+
+  window.BPWalls = { piece: piece, wallClass: wallClass, diagonalFloors: diagonalFloors, draw: draw, drawMap: drawMap };
 })();

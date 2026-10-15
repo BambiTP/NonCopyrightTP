@@ -1,4 +1,4 @@
-// ranked.js - Eggball Ranked: a logged-in-only queue next to Play Now's casual one. When 12 are queued
+// Eggball Ranked: a logged-in-only queue next to Play Now's casual one. When 12 are queued
 // an eggball game starts 6v6 with teams balanced by rating; afterwards everyone's Elo rating moves
 // (start 1500). If a player leaves, the game is voided unless 4 of their 5 teammates double-tap Shift
 // within 30 seconds to keep playing; either way the leaver takes a loss and a ranked queue lockout.
@@ -81,7 +81,7 @@ function leave(socket) {
   if (i >= 0) { queue.splice(i, 1); broadcast(); }
 }
 
-// ---- in game ----
+// in game
 const say = (room, message) => room.broadcast('chat', { from: null, message, to: 'all', c: '#ffcc33' });
 const teamName = (t) => (t === 1 ? 'Red' : 'Blue');
 const presentOn = (room, team) => [...room.ranked.roster.values()].filter((m) => m.team === team && m.present).length;

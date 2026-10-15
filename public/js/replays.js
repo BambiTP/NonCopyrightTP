@@ -1,4 +1,4 @@
-// replays.js - the replay list (/replays/data, server/replays.js); Watch opens /game?replay=<key>.
+// The replay list (/replays/data, server/replays.js); Watch opens /game?replay=<key>.
 (function () {
   var rows = document.getElementById('replay-rows');
   var user = document.getElementById('filters').getAttribute('data-user');
