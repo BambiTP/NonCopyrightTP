@@ -37,8 +37,8 @@
       tile(12, 0, 4, 3);                      // spike
       tile(12, 4, 2, 3);                      // juke juice
       tile(12, 1, 6, 1);                      // bomb
-      if (sp) c.drawImage(sp, 0, 0, 40, 40, 40, 40, 40, 40);
-      if (po) c.drawImage(po, 0, 0, 40, 40, 280, 120, 40, 40);
+      if (sp) c.drawImage(sp, 0, 0, 40, 40, 40, 80, 40, 40);   // boost (1, 2)
+      if (po) c.drawImage(po, 0, 0, 40, 40, 280, 80, 40, 40);  // portal (7, 2)
     });
   }
 
